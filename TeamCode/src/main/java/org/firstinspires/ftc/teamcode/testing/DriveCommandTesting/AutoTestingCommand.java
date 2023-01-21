@@ -98,7 +98,7 @@ public class AutoTestingCommand extends CommandOpMode {
 
 
         if(gamepad1.b){
-            schedule(new InstantCommand(() -> robot.intake.update(IntakeSubsystem.PivotState.INTAKE)).alongWith(new InstantCommand(() -> robot.intake.update(IntakeSubsystem.ClawState.OPEN))));
+            schedule(new InstantCommand(() -> robot.intake.update(IntakeSubsystem.RotateState.INTAKE)).alongWith(new InstantCommand(() -> robot.intake.update(IntakeSubsystem.ClawState.OPEN))));
         }
 
         if(gamepad1.y){

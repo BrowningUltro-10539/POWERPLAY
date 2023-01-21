@@ -1,19 +1,19 @@
-package org.firstinspires.ftc.teamcode.common;
+package org.firstinspires.ftc.teamcode.common.Disabled;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.arcrobotics.ftclib.command.CommandScheduler;
+import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
-import com.arcrobotics.ftclib.command.WaitCommand;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.Robot;
-import org.firstinspires.ftc.teamcode.commands.Auto.TrajectoryFollowerCommand;
 import org.firstinspires.ftc.teamcode.vision.AprilTagDetectionPipeline;
 import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
@@ -23,7 +23,8 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import java.util.ArrayList;
 
 @Autonomous
-public class APRIL_TAG_BLUE_ALLIANCE_LEFT extends LinearOpMode {
+@Disabled
+public class APRIL_TAG_BLUE_ALLIANCE_RIGHT extends LinearOpMode {
     OpenCvCamera camera;
     AprilTagDetectionPipeline aprilTagDetectionPipeline;
 
@@ -81,24 +82,25 @@ public class APRIL_TAG_BLUE_ALLIANCE_LEFT extends LinearOpMode {
         CommandScheduler.getInstance().reset();
         Robot robot = new Robot(hardwareMap, true);
 
-        Pose2d startPose = new Pose2d(35, 60, Math.toRadians(270));
+        Pose2d startPose = new Pose2d(-35, 60, Math.toRadians(270));
         robot.driveSubsystem.setPoseEstimate(startPose);
 
         Trajectory traj = robot.driveSubsystem.trajectoryBuilder(startPose)
-                .lineTo(new Vector2d(35, 23))
-                .splineTo(new Vector2d(47, 12), Math.toRadians(0))
+                .lineTo(new Vector2d(-35, 32))
                 .build();
 
+
+
         Trajectory zone1Traj = robot.driveSubsystem.trajectoryBuilder(traj.end())
-                .lineTo(new Vector2d(15, 12))
+                .lineTo(new Vector2d(-10, 32))
                 .build();
 
         Trajectory zone2Traj = robot.driveSubsystem.trajectoryBuilder(traj.end())
-                .lineTo(new Vector2d(35, 12))
+                .lineTo(new Vector2d(-34, 32))
                 .build();
 
         Trajectory zone3Traj = robot.driveSubsystem.trajectoryBuilder(traj.end())
-                .lineTo(new Vector2d(55, 12))
+                .lineTo(new Vector2d(-60, 32))
                 .build();
 
 
@@ -116,10 +118,11 @@ public class APRIL_TAG_BLUE_ALLIANCE_LEFT extends LinearOpMode {
                 module.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
             }
 
+            robot.intake.setRotate(0.4);
+            robot.intake.setClaw(0.5);
+            robot.intake.setArmTargetAngle(100);
 
-
-            robot.intake.setArmTargetAngle(10);
-
+            telemetry.addData("ARM ANGLE", robot.intake.getArmAngle());
             ArrayList<AprilTagDetection> currentDetections = aprilTagDetectionPipeline.getLatestDetections();
 
 
@@ -188,7 +191,14 @@ public class APRIL_TAG_BLUE_ALLIANCE_LEFT extends LinearOpMode {
             robot.intake.loop();
             robot.lift.loop();
 
+
+
             robot.write();
+
+
+            for(LynxModule module : robot.getControllers()){
+                module.clearBulkCache();
+            }
 
             telemetry.update();
             sleep(20);
@@ -232,40 +242,45 @@ public class APRIL_TAG_BLUE_ALLIANCE_LEFT extends LinearOpMode {
             if(tagOfInterest.id == ID_TAG_OF_INTEREST_1)
             {
                 CommandScheduler.getInstance().schedule(new SequentialCommandGroup(
-                        new TrajectoryFollowerCommand(robot.driveSubsystem, traj),
-                        //new InstantCommand(() -> robot.lift.setTargetTurretAngle(27))
-
-                        // new WaitCommand(1000),
-                        //   new LiftAndDropConeCommand(robot),
-                        new WaitCommand(2000),
-                        new TrajectoryFollowerCommand(robot.driveSubsystem, zone1Traj)
-                        // new InstantCommand(() -> robot.intake.setArmTargetAngle(90))
+//                                new TrajectoryFollowerCommand(robot.driveSubsystem, traj),
+//                                //new InstantCommand(() -> robot.lift.setTargetTurretAngle(27))
+//
+//                        // new WaitCommand(1000),
+//                      //   new LiftAndDropConeCommand(robot),
+//
+//                        new InstantCommand(() -> robot.driveSubsystem.turn(Math.toRadians(90))),
+//                        new InstantCommand(() -> robot.intake.update(IntakeSubsystem.IntakeState.DECIDE)),
+//                        new WaitCommand(2000),
+//                        new TrajectoryFollowerCommand(robot.driveSubsystem, zone1Traj),
+                         new InstantCommand(() -> robot.intake.setArmTargetAngle(50))
                 ));
             }
             else if(tagOfInterest.id == ID_TAG_OF_INTEREST_2)
             {
                 CommandScheduler.getInstance().schedule(new SequentialCommandGroup(
-                        new TrajectoryFollowerCommand(robot.driveSubsystem, traj),
-                        //new InstantCommand(() -> robot.lift.setTargetTurretAngle(27))
-
-                        // new WaitCommand(1000),
-                        //   new LiftAndDropConeCommand(robot),
-                        new WaitCommand(2000),
-                        new TrajectoryFollowerCommand(robot.driveSubsystem, zone2Traj)
-                        // new InstantCommand(() -> robot.intake.setArmTargetAngle(90))
+//                        new TrajectoryFollowerCommand(robot.driveSubsystem, traj),
+//                        //new InstantCommand(() -> robot.lift.setTargetTurretAngle(27))
+//
+//                        // new WaitCommand(1000),
+//                        //   new LiftAndDropConeCommand(robot),
+//                        new InstantCommand(() -> robot.intake.update(IntakeSubsystem.IntakeState.DECIDE)),
+//                        new WaitCommand(2000),
+//                        new TrajectoryFollowerCommand(robot.driveSubsystem, zone2Traj),
+                new InstantCommand(() -> robot.intake.setArmTargetAngle(50))
                 ));
             }
             else if(tagOfInterest.id == ID_TAG_OF_INTEREST_3)
             {
                 CommandScheduler.getInstance().schedule(new SequentialCommandGroup(
-                        new TrajectoryFollowerCommand(robot.driveSubsystem, traj),
-                        //new InstantCommand(() -> robot.lift.setTargetTurretAngle(27))
-
-                        // new WaitCommand(1000),
-                        //   new LiftAndDropConeCommand(robot),
-                        new WaitCommand(2000),
-                        new TrajectoryFollowerCommand(robot.driveSubsystem, zone3Traj)
-                        // new InstantCommand(() -> robot.intake.setArmTargetAngle(90))
+//                        new TrajectoryFollowerCommand(robot.driveSubsystem, traj),
+//                        //new InstantCommand(() -> robot.lift.setTargetTurretAngle(27))
+//
+//                        // new WaitCommand(1000),
+//                        //   new LiftAndDropConeCommand(robot),
+//                        new InstantCommand(() -> robot.intake.update(IntakeSubsystem.IntakeState.DECIDE)),
+//                        new WaitCommand(2000),
+//                        new TrajectoryFollowerCommand(robot.driveSubsystem, zone3Traj),
+                        new InstantCommand(() -> robot.intake.setArmTargetAngle(50))
                 ));
             }
         }

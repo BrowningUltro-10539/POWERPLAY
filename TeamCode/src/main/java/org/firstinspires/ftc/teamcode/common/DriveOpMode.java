@@ -36,10 +36,6 @@ public class DriveOpMode extends CommandOpMode {
 
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
-//        PhotonCore.CONTROL_HUB.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
-//        PhotonCore.EXPANSION_HUB.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
-//        PhotonCore.experimental.setMaximumParallelCommands(0);
-//        PhotonCore.enable();
 
         for(LynxModule module : robot.getControllers()){
             module.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
@@ -59,45 +55,6 @@ public class DriveOpMode extends CommandOpMode {
 
         robot.read();
 
-        /* Gamepad 1 Functions
-        *  Driving - Left and Right Stick
-        *  A and D-Pad Down = Turret.RIGHT AND LEFT POLE
-        *  B and D-Pad Left = Turret.NINETY and NEG_NINETY
-        *  Y and D-Pad Up = Adjust turret angle (right and left, respectively) -> Add to the target angle
-        *  Left Bumper = Straighten the turret to be zero degrees
-        *  Right Bumper = Drop and retract
-        *  */
-
-        /* Gamepad 2 Functions
-        *
-        *  A - Transfer cone
-        *  Y - manual control for arm lifting up
-        *  X - manual control for arm coming down
-        *
-        *
-        *  DPad Up - High Point w/ Funnel in Transition Mode
-        *  Dpad-Down - Put slides down if not down
-        *  Dpad-Left - Put slides in some medium position
-        *
-        *  Left Bumper - override slide automation  - manual control for slides
-        *  Left Stick - control the slides manually after a tri
-        *
-        *  Right Bumper - override turret automation - manual control for the intake turret
-        *  Right Stick - manual control for the intake turret
-        *
-        *  Right and Left Triggers - Overrides claw and let's me open it up automatically
-
-        * */
-        // Add driving later
-
-
-        //Once intaked, arm and claw goes a midpoint
-        //One for transfer
-        //One for low
-        //Manual claw open
-
-        //bumper is flip but trigger is deposit and retract
-        //
 
         if(gamepad1.a){
             schedule(new InstantCommand(() -> robot.intake.update(IntakeSubsystem.IntakeState.TRANSFER)));
@@ -128,7 +85,7 @@ public class DriveOpMode extends CommandOpMode {
         }
 
         if(gamepad1.left_bumper){
-            schedule(new InstantCommand(() -> robot.intake.update(IntakeSubsystem.IntakeState.OPEN_CLAW)));
+            schedule(new InstantCommand(() -> robot.intake.update(IntakeSubsystem.IntakeState.CLOSE_CLAW)));
         }
 
 

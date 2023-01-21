@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.common;
+package org.firstinspires.ftc.teamcode.common.Disabled;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
@@ -8,6 +8,7 @@ import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -23,7 +24,8 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import java.util.ArrayList;
 
 @Autonomous
-public class APRIL_TAG_RED_ALLIANCE_LEFT extends LinearOpMode {
+@Disabled
+public class APRIL_TAG_RED_ALLIANCE_RIGHT extends LinearOpMode {
     OpenCvCamera camera;
     AprilTagDetectionPipeline aprilTagDetectionPipeline;
 
@@ -81,24 +83,25 @@ public class APRIL_TAG_RED_ALLIANCE_LEFT extends LinearOpMode {
         CommandScheduler.getInstance().reset();
         Robot robot = new Robot(hardwareMap, true);
 
-        Pose2d startPose = new Pose2d(-35, -60, Math.toRadians(90));
+        Pose2d startPose = new Pose2d(35, -60, Math.toRadians(90));
         robot.driveSubsystem.setPoseEstimate(startPose);
 
         Trajectory traj = robot.driveSubsystem.trajectoryBuilder(startPose)
-                .lineTo(new Vector2d(-35, -36))
+                .lineTo(new Vector2d(35, -32))
                 .build();
 
         Trajectory zone1Traj = robot.driveSubsystem.trajectoryBuilder(traj.end())
-                .lineTo(new Vector2d(-10, -36))
+                .lineTo(new Vector2d(10, -32))
                 .build();
 
         Trajectory zone2Traj = robot.driveSubsystem.trajectoryBuilder(traj.end())
-                .lineTo(new Vector2d(-35, -36))
+                .lineTo(new Vector2d(34, -32))
                 .build();
 
         Trajectory zone3Traj = robot.driveSubsystem.trajectoryBuilder(traj.end())
-                .lineTo(new Vector2d(-60, -36))
+                .lineTo(new Vector2d(60, -32))
                 .build();
+
 
 
         /*
@@ -114,7 +117,7 @@ public class APRIL_TAG_RED_ALLIANCE_LEFT extends LinearOpMode {
                 module.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
             }
 
-            robot.intake.setArmTargetAngle(50);
+            robot.intake.setArmTargetAngle(40);
 
             ArrayList<AprilTagDetection> currentDetections = aprilTagDetectionPipeline.getLatestDetections();
 

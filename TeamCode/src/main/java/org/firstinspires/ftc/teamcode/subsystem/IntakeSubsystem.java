@@ -8,9 +8,7 @@ import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.controller.PIDController;
-import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
-import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
@@ -21,18 +19,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @Config
 public class IntakeSubsystem extends SubsystemBase {
-    public final MotorEx turret;
-    public final MotorEx arm;
-    private final AnalogInput armEncoder;
-
-    private final Servo pivot;
+    private final Servo rotate;
     private final Servo claw;
-
-    /* New Intake Materials */
-    //START HERE
-
-    private final Servo leftLinkage;
-    private final Servo rightLinkage;
     private final Servo leftArm;
     private final Servo rightArm;
 
@@ -40,11 +28,6 @@ public class IntakeSubsystem extends SubsystemBase {
     public static double ARM_DOWN = 0.0;
     public static double ARM_UP = 0.0;
     public static double ARM_TRANSFER = 0.0;
-
-
-    //END HERE
-
-
 
     private final RevColorSensorV3 colorSensor;
 
@@ -87,17 +70,18 @@ public class IntakeSubsystem extends SubsystemBase {
     public boolean autoAim = false;
 
 
-    private final double TURRET_TICKS_PER_REV = 537.7;
-    private final double TURRET_TICKS_PER_DEGREE = TURRET_TICKS_PER_REV / 360.0;
-
-    private final double ARM_TICKS_PER_REV = 1425.1;
-    private final double ARM_TICKS_PER_DEGREE = ARM_TICKS_PER_REV / 360.0;
+//    private final double TURRET_TICKS_PER_REV = 537.7;
+//    private final double TURRET_TICKS_PER_DEGREE = TURRET_TICKS_PER_REV / 360.0;
+//
+//    private final double ARM_TICKS_PER_REV = 1425.1;
+//    private final double ARM_TICKS_PER_DEGREE = ARM_TICKS_PER_REV / 360.0;
 
     public static double CLAW_OPEN = 0.5;
     public static double CLAW_CLOSE = 0.8;
 
-    public static double ARM_DOWN_ANGLE = 10;
-    public static double ARM_UP_ANGLE = 90;
+    public static double ARM_INTAKE = 1;
+    public static double ARM_MID = 0.5;
+    public static double ARM_OUTTAKE = 0;
 
     public static double PIVOT_TRANSFER = 0.45;
     public static double PIVOT_INTAKE = 0.2;
@@ -113,12 +97,11 @@ public class IntakeSubsystem extends SubsystemBase {
 
     private boolean isAuto;
 
-    public enum IntakeState { INTAKE, DECIDE, TRANSFER, LOW_POLE, MANUAL, DEPOSIT, OPEN_CLAW}
+    public enum IntakeState { INTAKE, DECIDE, TRANSFER, LOW_POLE, MANUAL, DEPOSIT, CLOSE_CLAW}
     public enum ArmState { INTAKE, TRANSITION,  DEPOSIT }
-    public enum TurretState{ STRAIGHT, ALIGNED, AUTO_AIM }
     public enum ClawState { OPEN, CLOSED }
-    public enum PivotState { INTAKE, MID, TRANSFER }
-    public enum LinkageState {INTAKE, MID, TRANSFER }
+    public enum RotateState { INTAKE, MID, TRANSFER }
+
 
     public IntakeState intakeState = IntakeState.INTAKE;
 
@@ -126,19 +109,11 @@ public class IntakeSubsystem extends SubsystemBase {
     private double liftTurretAngle = 0;
 
     public IntakeSubsystem(HardwareMap hardwareMap, boolean isAuto){
-        this.turret = new MotorEx(hardwareMap, "intakeTurret");
-        this.arm = new MotorEx(hardwareMap, "arm");
-        this.armEncoder = hardwareMap.get(AnalogInput.class, "armEncoder");
+        this.rotate = hardwareMap.get(Servo.class, "PortSomething");
+        this.claw = hardwareMap.get(Servo.class, "PortSomething");
 
-        this.pivot = hardwareMap.get(Servo.class, "portC2");
-        this.claw = hardwareMap.get(Servo.class, "portC0");
-
-        /* New Intake Stuff*/
-        this.leftLinkage = hardwareMap.get(Servo.class, "PortSomething");
-        this.rightLinkage = hardwareMap.get(Servo.class, "PortSomething");
         this.leftArm = hardwareMap.get(Servo.class, "PortSomething");
         this.rightArm = hardwareMap.get(Servo.class, "PortSomething");
-
 
         this.colorSensor = hardwareMap.get(RevColorSensorV3.class, "colorSensor");
 
@@ -171,80 +146,42 @@ public class IntakeSubsystem extends SubsystemBase {
         }
     }
 
-    public void update(PivotState state){
+    public void update(RotateState state){
         switch (state){
             case INTAKE:
-                setPivot(PIVOT_INTAKE);
+                setRotate(PIVOT_INTAKE);
                 break;
             case MID:
-                setPivot(PIVOT_MID);
+                setRotate(PIVOT_MID);
                 break;
             case TRANSFER:
-                setPivot(PIVOT_TRANSFER);
+                setRotate(PIVOT_TRANSFER);
         }
     }
 
-    public void update(LinkageState state){
-        switch(state){
-            case INTAKE:
-                setLinkage(0.0);
-                break;
-            case MID:
-                setLinkage(0.1);
-                break;
-            case TRANSFER:
-                setLinkage(0.2);
-                break;
-        }
-    }
+
     public void update(ArmState state){
         switch(state){
             case INTAKE:
-                setArmTargetAngle(ARM_DOWN_ANGLE);
+                setArm(0);
                 break;
             case TRANSITION:
-                setArmTargetAngle((ARM_UP_ANGLE + ARM_DOWN_ANGLE) / 2);
+                setArm(0.5);
                 break;
             case DEPOSIT:
-                setArmTargetAngle(ARM_UP_ANGLE);
+                setArm(1);
                 break;
         }
     }
 
-    public void update(TurretState state){
-        switch(state){
-            case STRAIGHT:
-                setTurretTargetAngle(0);
-                break;
-            case ALIGNED:
-                if(liftTurretState.equals(LiftSubsystem.TurretState.LEFT_POLE)){
-                    setTurretTargetAngle(-getLiftTurretAngle() - 5);
-                } else if(liftTurretState.equals(LiftSubsystem.TurretState.RIGHT_POLE)){
-                    setTurretTargetAngle(getLiftTurretAngle() - 5);
-                } else if(liftTurretState.equals(LiftSubsystem.TurretState.STRAIGHT)){
-                    setTurretTargetAngle(0);
-                } else if(liftTurretState.equals(LiftSubsystem.TurretState.NEG_NINETY)){
-                    setTurretTargetAngle(-10);
-                } else if(liftTurretState.equals(LiftSubsystem.TurretState.POS_NINETY)){
-                    setTurretTargetAngle(25);
-                }
-                break;
-            case AUTO_AIM:
-                autoAim = true;
-                break;
-        }
-    }
+
 
 
     public void update(IntakeState state){
         switch(state){
             case INTAKE:
                 CommandScheduler.getInstance().schedule(
-                        new SequentialCommandGroup(
-                                new InstantCommand(() -> setArmTargetAngle(18)),
-                                new InstantCommand(() -> update(PivotState.INTAKE)),
-                                new InstantCommand(() -> update(ClawState.OPEN))
-                        )
+                        new SequentialCommandGroup()
                 );
                 intakeState = state;
 
@@ -252,12 +189,7 @@ public class IntakeSubsystem extends SubsystemBase {
             case DECIDE:
                 CommandScheduler.getInstance().schedule(
                         new SequentialCommandGroup(
-                                new InstantCommand(() -> update(ClawState.CLOSED)),
-                                new WaitCommand(500),
-                                new ParallelCommandGroup(
-                                        new InstantCommand(() -> setArmTargetAngle(90)),
-                                        new InstantCommand(() -> update(PivotState.MID))
-                                )
+                                new WaitCommand(100)
                         )
                 );
                 intakeState = state;
@@ -265,13 +197,7 @@ public class IntakeSubsystem extends SubsystemBase {
             case TRANSFER:
                 CommandScheduler.getInstance().schedule(
                         new SequentialCommandGroup(
-                                new InstantCommand(() -> setArmTargetAngle(105)),
-                                new InstantCommand(() -> update(PivotState.TRANSFER)),
-                                new WaitCommand(1000),
-                                new InstantCommand(() -> update(ClawState.OPEN)),
-                                new WaitCommand(500),
-                                new InstantCommand(() -> update(PivotState.MID)),
-                                new InstantCommand(() -> setArmTargetAngle(80))
+                                new WaitCommand(20)
                         )
                 );
                 intakeState = state;
@@ -280,8 +206,7 @@ public class IntakeSubsystem extends SubsystemBase {
             case LOW_POLE:
                 CommandScheduler.getInstance().schedule(
                         new ParallelCommandGroup(
-                                new InstantCommand(() -> setArmTargetAngle(90)),
-                                new InstantCommand(() -> setPivot(0.2))
+                                new WaitCommand(30)
                         )
                 );
                 intakeState = state;
@@ -292,36 +217,22 @@ public class IntakeSubsystem extends SubsystemBase {
                 );
                 intakeState = state;
                 break;
-            case OPEN_CLAW:
+            case CLOSE_CLAW:
                 CommandScheduler.getInstance().schedule(
                         new InstantCommand(() -> setClaw(0.8))
                 );
         }
     }
 
-    public void read(){
-        turretPosition = turret.encoder.getPosition();
-        turretAngle = turret.encoder.getPosition() / TURRET_TICKS_PER_DEGREE;
-        armAbsoluteAngle = arm.encoder.getPosition() / ARM_TICKS_PER_DEGREE;
-        colorSensorDistance = colorSensor.getDistance(DistanceUnit.CM);
-    }
+    public void read(){ colorSensorDistance = colorSensor.getDistance(DistanceUnit.CM); }
 
     public void loop(){
-        turretPower = turretController.calculate(turretAngle, turretTargetAngle) / voltage * 12;
-        armPower = armController.calculate(armAbsoluteAngle, armTargetAngle) + (Math.cos(armTargetAngle / armAbsoluteAngle) * Fa);
-
-        armPower = armPower * (voltage / 12);
-
-
         if(colorSensor.getDistance(DistanceUnit.CM) < 4 && intakeState.equals(IntakeState.INTAKE)){
             update(IntakeState.DECIDE);
         }
     }
 
-    public void write(){
-        arm.set(armPower);
-        turret.set(turretPower);
-    }
+    public void write(){}
 
 
     public void setTurretTargetPosition(double position){ turretTargetPosition = position; }
@@ -336,6 +247,22 @@ public class IntakeSubsystem extends SubsystemBase {
     public void setLiftTurretCurrentAngle(double angle){ liftTurretAngle = angle; }
     public void setLiftTurretState(LiftSubsystem.TurretState state) { liftTurretState = state;  }
     public double getLiftTurretAngle() { return liftTurretAngle; }
+
+
+
+    public void setRotate(double pos){
+        rotate.setPosition(pos);
+    }
+
+    public void setClaw(double pos){
+        claw.setPosition(Range.clip(pos, 0.5, 1));
+    }
+
+
+    public void setArm(double pos){
+        leftArm.setPosition(pos);
+        rightArm.setPosition(1 - pos);
+    }
 
 
     public static class DualAngle {
@@ -357,22 +284,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
     }
 
-    public void setPivot(double pos){
-        pivot.setPosition(pos);
-    }
 
-    public void setClaw(double pos){
-        claw.setPosition(Range.clip(pos, 0.5, 1));
-    }
-    public void setArm(double pos){
-        leftArm.setPosition(pos);
-        rightArm.setPosition(1 - pos);
-    }
-
-    public void setLinkage(double pos){
-        leftLinkage.setPosition(pos);
-        rightLinkage.setPosition(pos);
-    }
 
 
 
