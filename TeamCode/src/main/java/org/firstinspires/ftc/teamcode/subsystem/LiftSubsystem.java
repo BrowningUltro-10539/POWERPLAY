@@ -88,10 +88,9 @@ public class LiftSubsystem extends SubsystemBase {
 
     public enum LiftState{
         READY_TO_INTAKE,
-        FUNNEL_UP,
         HIGH_POLE_EXTEND,
         MEDIUM,
-        DEPOSIT_AND_RETRACT
+
     }
 
     public enum TurretState {
@@ -152,50 +151,31 @@ public class LiftSubsystem extends SubsystemBase {
 
     }
 
-    public void update(LiftState state){
-        switch(state){
-            case READY_TO_INTAKE:
-                CommandScheduler.getInstance().schedule(
-                        new ParallelCommandGroup(
-                                new LiftPositionCommand(this, 0, 2),
-                                new InstantCommand(() -> outtakeClaw.setPosition(0.5)),
-                                new InstantCommand(() -> update(FunnelState.INTAKE))
-                        )
-                );
-                liftState = state;
-                break;
-            case FUNNEL_UP:
-                CommandScheduler.getInstance().schedule(
-                        new InstantCommand(() -> update(FunnelState.OUTTAKE))
-                );
-                liftState = state;
-                break;
-            case HIGH_POLE_EXTEND:
-                CommandScheduler.getInstance().schedule(
-                        new ParallelCommandGroup(
-                                new LiftPositionCommand(this, 22, 2)
-                        )
-                );
-                liftState = state;
-                break;
-
-            case DEPOSIT_AND_RETRACT:
-                CommandScheduler.getInstance().schedule(
-                        new SequentialCommandGroup(
-                                new InstantCommand(() -> outtakeClaw.setPosition(0.5)),
-                                new WaitCommand(750),
-                                new InstantCommand(() -> update(LiftState.READY_TO_INTAKE))
-                        )
-                );
-                liftState = state;
-                break;
-
-            case MEDIUM:
-                CommandScheduler.getInstance().schedule(
-                        new LiftPositionCommand(this, 2, 0.5)
-                );
-        }
-    }
+//    public void update(LiftState state){
+//        switch(state){
+//            case READY_TO_INTAKE:
+//                CommandScheduler.getInstance().schedule(
+//                       new LiftPositionCommand(this, 0, 0)
+//                );
+//                liftState = state;
+//                break;
+//            case HIGH_POLE_EXTEND:
+//                CommandScheduler.getInstance().schedule(
+//                        new ParallelCommandGroup(
+//                                new LiftPositionCommand(this, 15, 2)
+//                        )
+//                );
+//                liftState = state;
+//                break;
+//
+//            case MEDIUM:
+//                CommandScheduler.getInstance().schedule(
+//                        new LiftPositionCommand(this, 3, 0.5)
+//                );
+//                liftState = state;
+//                break;
+//        }
+//    }
 
     public void update(FunnelState state){
         switch(state){

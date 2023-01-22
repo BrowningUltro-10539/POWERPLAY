@@ -24,7 +24,7 @@ public class AutonomousInitSequence extends LinearOpMode {
     int TAG_3 = 19;
 
     public void runOpMode(){
-        
+
     }
 
 

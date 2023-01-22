@@ -24,11 +24,6 @@ public class IntakeSubsystem extends SubsystemBase {
     private final Servo leftArm;
     private final Servo rightArm;
 
-
-    public static double ARM_DOWN = 0.0;
-    public static double ARM_UP = 0.0;
-    public static double ARM_TRANSFER = 0.0;
-
     private final RevColorSensorV3 colorSensor;
 
     private final ElapsedTime timer;
@@ -70,22 +65,15 @@ public class IntakeSubsystem extends SubsystemBase {
     public boolean autoAim = false;
 
 
-//    private final double TURRET_TICKS_PER_REV = 537.7;
-//    private final double TURRET_TICKS_PER_DEGREE = TURRET_TICKS_PER_REV / 360.0;
-//
-//    private final double ARM_TICKS_PER_REV = 1425.1;
-//    private final double ARM_TICKS_PER_DEGREE = ARM_TICKS_PER_REV / 360.0;
+    public static double CLAW_OPEN = 0;
+    public static double CLAW_CLOSE = 0.5;
 
-    public static double CLAW_OPEN = 0.5;
-    public static double CLAW_CLOSE = 0.8;
+    public static double ROTATE_INTAKE = 1;
+    public static double ROTATE_OUTTAKE = 0;
+    public static double ROTATE_MID = 0.5;
 
-    public static double ARM_INTAKE = 1;
-    public static double ARM_MID = 0.5;
-    public static double ARM_OUTTAKE = 0;
-
-    public static double PIVOT_TRANSFER = 0.45;
-    public static double PIVOT_INTAKE = 0.2;
-    public static double PIVOT_MID = 0.30;
+    public static double ARM_DOWN = 1;
+    public static double ARM_UP = 0.5;
 
     public DualAngle[] FIVE_STACK_POSITIONS = new DualAngle[]{
             new DualAngle(65,0.10),
@@ -109,11 +97,11 @@ public class IntakeSubsystem extends SubsystemBase {
     private double liftTurretAngle = 0;
 
     public IntakeSubsystem(HardwareMap hardwareMap, boolean isAuto){
-        this.rotate = hardwareMap.get(Servo.class, "PortSomething");
-        this.claw = hardwareMap.get(Servo.class, "PortSomething");
+        this.rotate = hardwareMap.get(Servo.class, "portC2");
+        this.claw = hardwareMap.get(Servo.class, "portC5");
 
-        this.leftArm = hardwareMap.get(Servo.class, "PortSomething");
-        this.rightArm = hardwareMap.get(Servo.class, "PortSomething");
+        this.leftArm = hardwareMap.get(Servo.class, "portC0");
+        this.rightArm = hardwareMap.get(Servo.class, "portC4");
 
         this.colorSensor = hardwareMap.get(RevColorSensorV3.class, "colorSensor");
 
@@ -149,13 +137,13 @@ public class IntakeSubsystem extends SubsystemBase {
     public void update(RotateState state){
         switch (state){
             case INTAKE:
-                setRotate(PIVOT_INTAKE);
+                setRotate(ROTATE_INTAKE);
                 break;
             case MID:
-                setRotate(PIVOT_MID);
+                setRotate(ROTATE_MID);
                 break;
             case TRANSFER:
-                setRotate(PIVOT_TRANSFER);
+                setRotate(ROTATE_OUTTAKE);
         }
     }
 
@@ -163,13 +151,13 @@ public class IntakeSubsystem extends SubsystemBase {
     public void update(ArmState state){
         switch(state){
             case INTAKE:
-                setArm(0);
+                setArm(ARM_DOWN);
                 break;
             case TRANSITION:
-                setArm(0.5);
+                setArm(0.75);
                 break;
             case DEPOSIT:
-                setArm(1);
+                setArm(ARM_UP);
                 break;
         }
     }
@@ -253,17 +241,16 @@ public class IntakeSubsystem extends SubsystemBase {
     public void setRotate(double pos){
         rotate.setPosition(pos);
     }
-
     public void setClaw(double pos){
-        claw.setPosition(Range.clip(pos, 0.5, 1));
+        claw.setPosition(pos);
     }
+
 
 
     public void setArm(double pos){
         leftArm.setPosition(pos);
         rightArm.setPosition(1 - pos);
     }
-
 
     public static class DualAngle {
         private double armAngle = 0;
@@ -283,10 +270,6 @@ public class IntakeSubsystem extends SubsystemBase {
 
 
     }
-
-
-
-
 
 
 
