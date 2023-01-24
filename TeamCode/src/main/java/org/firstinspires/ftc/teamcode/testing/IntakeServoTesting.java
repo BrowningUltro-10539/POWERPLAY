@@ -20,15 +20,15 @@ public class IntakeServoTesting extends LinearOpMode {
     public static double CLAW_OPEN = 0.5;
     public static double CLAW_CLOSE = 0;
 
-    public static double ARM_UP = 0.5;
+    public static double ARM_UP = 0;
     public static double ARM_DOWN = 1;
 
     @Override
     public void runOpMode(){
         leftArm = hardwareMap.get(Servo.class, "portC0");
-        rightArm = hardwareMap.get(Servo.class, "portC4");
+        rightArm = hardwareMap.get(Servo.class, "portC2");
         leftClaw = hardwareMap.get(Servo.class, "portC5");
-        rotation = hardwareMap.get(Servo.class, "portC2");
+        rotation = hardwareMap.get(Servo.class, "portC4");
 
         waitForStart();
 

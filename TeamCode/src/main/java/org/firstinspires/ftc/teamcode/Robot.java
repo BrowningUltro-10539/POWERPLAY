@@ -57,7 +57,6 @@ public class Robot {
     }
 
     public void reset(){
-        intake.turret.resetEncoder();
         lift.lift1.resetEncoder();
     }
 

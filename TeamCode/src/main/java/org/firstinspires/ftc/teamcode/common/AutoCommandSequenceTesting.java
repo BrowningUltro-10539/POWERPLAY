@@ -15,6 +15,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Robot;
+import org.firstinspires.ftc.teamcode.commands.Auto.NewBot.AutoInitCommand;
 import org.firstinspires.ftc.teamcode.commands.LiftCommands.LiftPositionCommand;
 import org.firstinspires.ftc.teamcode.commands.MecanumDriveCommand;
 import org.firstinspires.ftc.teamcode.subsystem.IntakeSubsystem;
@@ -22,7 +23,7 @@ import org.firstinspires.ftc.teamcode.subsystem.LiftSubsystem;
 
 @TeleOp
 @Config
-public class DriveOpMode extends CommandOpMode {
+public class AutoCommandSequenceTesting extends CommandOpMode {
     private Robot robot;
     private ElapsedTime timer;
     private double loopTime = 0;
@@ -66,48 +67,13 @@ public class DriveOpMode extends CommandOpMode {
             schedule(new InstantCommand(() -> robot.intake.update(IntakeSubsystem.ClawState.CLOSED)));
         }
 
-        if(gamepad1.x){
-            schedule(new ParallelCommandGroup(
-                    new InstantCommand(() -> robot.intake.update(IntakeSubsystem.RotateState.TRANSFER)),
-                    new InstantCommand(() -> robot.intake.update(IntakeSubsystem.ArmState.DEPOSIT))));
-        }
 
-        if(gamepad1.y){
-            schedule(new ParallelCommandGroup(
-                    new InstantCommand(() -> robot.intake.update(IntakeSubsystem.RotateState.TRANSFER)),
-                    new InstantCommand(() -> robot.intake.update(IntakeSubsystem.ArmState.DEPOSIT)),
-                    new LiftPositionCommand(robot.lift, 14, 2)));
-        }
-
-        if(gamepad1.b){
-            schedule(new SequentialCommandGroup(
-                    new ParallelCommandGroup(
-                            new InstantCommand(() -> robot.intake.update(IntakeSubsystem.RotateState.TRANSFER)),
-                            new InstantCommand(() -> robot.intake.update(IntakeSubsystem.ArmState.DEPOSIT))),
-                    new LiftPositionCommand(robot.lift, 30.5, 2)
-            ));
-        }
 
         if(gamepad1.a){
-            schedule(new SequentialCommandGroup(
-                        new InstantCommand(() -> robot.intake.update(IntakeSubsystem.ClawState.OPEN)),
-                        new WaitCommand(200),
-                        new LiftPositionCommand(robot.lift, 0, 2),
-                        new ParallelCommandGroup(
-                                new InstantCommand(() -> robot.intake.update(IntakeSubsystem.RotateState.INTAKE)),
-                                new InstantCommand(() -> robot.intake.update(IntakeSubsystem.ArmState.INTAKE))
-
-                        )
-
-            ));
+            schedule(new AutoInitCommand(robot));
         }
 
 
-        if(gamepad1.right_bumper){
-            schedule(new MecanumDriveCommand(robot.driveSubsystem, () -> -gamepad1.left_stick_y * 0.5, () -> -gamepad1.left_stick_x * 0.5, () -> gamepad1.right_stick_x * 0.5));
-        } else {
-            schedule(new MecanumDriveCommand(robot.driveSubsystem, () -> -gamepad1.left_stick_y, () -> -gamepad1.left_stick_x, () -> gamepad1.right_stick_x));
-        }
 
 //        if(gamepad2.left_bumper){
 //            schedule(new InstantCommand(() -> robot.lift.update(LiftSubsystem.TurretState.STRAIGHT)));

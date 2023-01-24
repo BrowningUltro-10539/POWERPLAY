@@ -68,12 +68,12 @@ public class IntakeSubsystem extends SubsystemBase {
     public static double CLAW_OPEN = 0;
     public static double CLAW_CLOSE = 0.5;
 
-    public static double ROTATE_INTAKE = 1;
-    public static double ROTATE_OUTTAKE = 0;
-    public static double ROTATE_MID = 0.5;
+    public static double ROTATE_INTAKE = 0.98;
+    public static double ROTATE_OUTTAKE = 0.3;
+    public static double ROTATE_MID = 0.25;
 
     public static double ARM_DOWN = 1;
-    public static double ARM_UP = 0.5;
+    public static double ARM_UP = 0.45;
 
     public DualAngle[] FIVE_STACK_POSITIONS = new DualAngle[]{
             new DualAngle(65,0.10),
@@ -97,11 +97,11 @@ public class IntakeSubsystem extends SubsystemBase {
     private double liftTurretAngle = 0;
 
     public IntakeSubsystem(HardwareMap hardwareMap, boolean isAuto){
-        this.rotate = hardwareMap.get(Servo.class, "portC2");
+        this.rotate = hardwareMap.get(Servo.class, "portC4");
         this.claw = hardwareMap.get(Servo.class, "portC5");
 
         this.leftArm = hardwareMap.get(Servo.class, "portC0");
-        this.rightArm = hardwareMap.get(Servo.class, "portC4");
+        this.rightArm = hardwareMap.get(Servo.class, "portC2");
 
         this.colorSensor = hardwareMap.get(RevColorSensorV3.class, "colorSensor");
 
