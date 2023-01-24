@@ -30,6 +30,8 @@ import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigu
 import org.firstinspires.ftc.teamcode.rr.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.rr.trajectorysequence.TrajectorySequenceBuilder;
 import org.firstinspires.ftc.teamcode.rr.trajectorysequence.TrajectorySequenceRunner;
+import org.firstinspires.ftc.teamcode.rr.util.AxisDirection;
+import org.firstinspires.ftc.teamcode.rr.util.BNO055IMUUtil;
 import org.firstinspires.ftc.teamcode.rr.util.LynxModuleUtil;
 
 import java.util.ArrayList;
@@ -116,6 +118,7 @@ public class SampleMecanumDrive extends MecanumDrive {
         //
         // For example, if +Y in this diagram faces downwards, you would use AxisDirection.NEG_Y.
         // BNO055IMUUtil.remapZAxis(imu, AxisDirection.NEG_Y);
+        BNO055IMUUtil.remapZAxis(imu, AxisDirection.NEG_Z);
 
         leftFront = hardwareMap.get(DcMotorEx.class, "LT");
         leftRear = hardwareMap.get(DcMotorEx.class, "LB");
