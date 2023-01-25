@@ -73,7 +73,7 @@ public class IntakeSubsystem extends SubsystemBase {
     public static double ROTATE_MID = 0.25;
 
     public static double ARM_DOWN = 1;
-    public static double ARM_UP = 0.45;
+    public static double ARM_UP = 0.52;
 
     public DualAngle[] FIVE_STACK_POSITIONS = new DualAngle[]{
             new DualAngle(65,0.10),

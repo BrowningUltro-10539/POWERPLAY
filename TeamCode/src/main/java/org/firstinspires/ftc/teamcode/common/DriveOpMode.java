@@ -76,7 +76,7 @@ public class DriveOpMode extends CommandOpMode {
             schedule(new ParallelCommandGroup(
                     new InstantCommand(() -> robot.intake.update(IntakeSubsystem.RotateState.TRANSFER)),
                     new InstantCommand(() -> robot.intake.update(IntakeSubsystem.ArmState.DEPOSIT)),
-                    new LiftPositionCommand(robot.lift, 14, 2)));
+                    new LiftPositionCommand(robot.lift, 7, 2)));
         }
 
         if(gamepad1.b){
@@ -84,7 +84,7 @@ public class DriveOpMode extends CommandOpMode {
                     new ParallelCommandGroup(
                             new InstantCommand(() -> robot.intake.update(IntakeSubsystem.RotateState.TRANSFER)),
                             new InstantCommand(() -> robot.intake.update(IntakeSubsystem.ArmState.DEPOSIT))),
-                    new LiftPositionCommand(robot.lift, 30.5, 2)
+                    new LiftPositionCommand(robot.lift, 23, 2)
             ));
         }
 
