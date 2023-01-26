@@ -18,10 +18,12 @@ import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.commands.Auto.NewAutoCommands.GrabConeFromStackCommand;
 import org.firstinspires.ftc.teamcode.commands.Auto.NewAutoCommands.LiftAndDropConeCommand;
 import org.firstinspires.ftc.teamcode.commands.Auto.TrajectoryFollowerCommand;
+import org.firstinspires.ftc.teamcode.commands.LiftCommands.LiftPositionCommand;
+import org.firstinspires.ftc.teamcode.subsystem.IntakeSubsystem;
+import org.firstinspires.ftc.teamcode.subsystem.LiftSubsystem;
 import org.openftc.easyopencv.OpenCvCamera;
 
 @Autonomous
-@Disabled
 public class RED_ALLIANCE_RIGHT extends LinearOpMode {
     private Robot robot;
     private ElapsedTime timer;
@@ -43,8 +45,11 @@ public class RED_ALLIANCE_RIGHT extends LinearOpMode {
         robot.driveSubsystem.setPoseEstimate(startPose);
 
         Trajectory traj = robot.driveSubsystem.trajectoryBuilder(startPose)
-                .lineTo(new Vector2d(35, -19))
-                .splineTo(new Vector2d(51.5, -11.75), Math.toRadians(0))
+                .lineTo(new Vector2d(35, -24))
+                .build();
+
+        Trajectory toConeStack = robot.driveSubsystem.trajectoryBuilder(traj.end())
+                .splineTo(new Vector2d(48, -7.5), Math.toRadians(0))
                 .build();
 
         while(!isStarted()) {
@@ -54,7 +59,7 @@ public class RED_ALLIANCE_RIGHT extends LinearOpMode {
                 module.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
             }
 
-            robot.intake.setArmTargetAngle(50);
+
 
             robot.intake.loop();
             robot.lift.loop();
@@ -67,14 +72,37 @@ public class RED_ALLIANCE_RIGHT extends LinearOpMode {
         waitForStart();
 
         CommandScheduler.getInstance().schedule(new SequentialCommandGroup(
+
                 new ParallelCommandGroup(
-                        new TrajectoryFollowerCommand(robot.driveSubsystem, traj),
-                        new InstantCommand(() -> robot.lift.setTargetTurretAngle(27)),
-                        new InstantCommand(() -> robot.intake.setArmTargetAngle(robot.intake.FIVE_STACK_POSITIONS[0].getArmAngle()))
+                        new InstantCommand(() -> robot.intake.update(IntakeSubsystem.ArmState.INTAKE)),
+                        new InstantCommand(() -> robot.intake.update(IntakeSubsystem.RotateState.INTAKE)),
+                        new InstantCommand(() -> robot.intake.update(IntakeSubsystem.ClawState.OPEN))
                 ),
-                new WaitCommand(1000),
-                new LiftAndDropConeCommand(robot),
-                new GrabConeFromStackCommand(robot, robot.intake.FIVE_STACK_POSITIONS[0])
+                new WaitCommand(100),
+                new InstantCommand(() -> robot.intake.update(IntakeSubsystem.ClawState.CLOSED)),
+                new WaitCommand(200),
+                new SequentialCommandGroup(
+                        new TrajectoryFollowerCommand(robot.driveSubsystem, traj),
+                        new InstantCommand(() -> robot.intake.update(IntakeSubsystem.ArmState.DEPOSIT)),
+                        new InstantCommand(() -> robot.intake.update(IntakeSubsystem.RotateState.TRANSFER)),
+                        new WaitCommand(50),
+                        new TrajectoryFollowerCommand(robot.driveSubsystem, toConeStack)
+                ),
+
+                new SequentialCommandGroup(
+                        new InstantCommand(() -> robot.lift.update(LiftSubsystem.TurretState.RIGHT_POLE)),
+                        new LiftPositionCommand(robot.lift, 23, 2),
+                        new WaitCommand(400),
+                        new InstantCommand(() -> robot.intake.update(IntakeSubsystem.ClawState.OPEN)),
+                        new WaitCommand(200),
+                        new LiftPositionCommand(robot.lift, 0, 2),
+                        new ParallelCommandGroup(
+                                new InstantCommand(() -> robot.intake.update(IntakeSubsystem.RotateState.INTAKE)),
+                                new InstantCommand(() -> robot.intake.update(IntakeSubsystem.ArmState.INTAKE)),
+                                new InstantCommand(() -> robot.lift.update(LiftSubsystem.TurretState.STRAIGHT))
+
+                        )
+                )
         ));
 
 

@@ -201,7 +201,7 @@ public class LiftSubsystem extends SubsystemBase {
                 turretState = state;
                 break;
             case RIGHT_POLE:
-                setTargetTurretAngle(23.5);
+                setTargetTurretAngle(21.5);
                 turretState = state;
                 break;
             case POS_NINETY:
