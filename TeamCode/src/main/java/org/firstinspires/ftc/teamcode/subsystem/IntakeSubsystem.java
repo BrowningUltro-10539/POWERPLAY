@@ -10,7 +10,9 @@ import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.PwmControl;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.ServoImplEx;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
@@ -19,7 +21,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @Config
 public class IntakeSubsystem extends SubsystemBase {
-    private final Servo rotate;
+    private final ServoImplEx rotate;
     private final Servo claw;
     private final Servo leftArm;
     private final Servo rightArm;
@@ -68,8 +70,8 @@ public class IntakeSubsystem extends SubsystemBase {
     public static double CLAW_OPEN = 0;
     public static double CLAW_CLOSE = 0.6;
 
-    public static double ROTATE_INTAKE = 0.98;
-    public static double ROTATE_OUTTAKE = 0.3;
+    public static double ROTATE_INTAKE = 0.97;
+    public static double ROTATE_OUTTAKE = 0.37;
     public static double ROTATE_MID = 0.25;
 
     public static double ARM_DOWN = 1;
@@ -97,7 +99,8 @@ public class IntakeSubsystem extends SubsystemBase {
     private double liftTurretAngle = 0;
 
     public IntakeSubsystem(HardwareMap hardwareMap, boolean isAuto){
-        this.rotate = hardwareMap.get(Servo.class, "portC4");
+        this.rotate = hardwareMap.get(ServoImplEx.class, "portC4");
+        this.rotate.setPwmRange(new PwmControl.PwmRange(500, 2500));
         this.claw = hardwareMap.get(Servo.class, "portC5");
 
         this.leftArm = hardwareMap.get(Servo.class, "portC0");

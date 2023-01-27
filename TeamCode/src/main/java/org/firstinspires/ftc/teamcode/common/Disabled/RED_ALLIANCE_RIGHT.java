@@ -19,6 +19,8 @@ import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.commands.Auto.NewAutoCommands.GrabConeFromStackCommand;
 import org.firstinspires.ftc.teamcode.commands.Auto.NewAutoCommands.LiftAndDropConeCommand;
 import org.firstinspires.ftc.teamcode.commands.Auto.TrajectoryFollowerCommand;
+import org.firstinspires.ftc.teamcode.commands.AutoDepositAndRetract;
+import org.firstinspires.ftc.teamcode.commands.AutoPickUpConeCommand;
 import org.firstinspires.ftc.teamcode.commands.LiftCommands.LiftPositionCommand;
 import org.firstinspires.ftc.teamcode.subsystem.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystem.LiftSubsystem;
@@ -51,14 +53,15 @@ public class RED_ALLIANCE_RIGHT extends LinearOpMode {
 
         Trajectory toConeStack = robot.driveSubsystem.trajectoryBuilder(traj.end())
                 .splineTo(new Vector2d(48, -7.5), Math.toRadians(0))
+
                 .build();
 
         Trajectory toConeOne = robot.driveSubsystem.trajectoryBuilder(toConeStack.end())
-                .lineTo(new Vector2d(60, -7.5))
+                .lineTo(new Vector2d(60.75, -7.5))
                 .build();
 
         Trajectory toPole = robot.driveSubsystem.trajectoryBuilder(toConeOne.end())
-                .back(12)
+                .lineTo(new Vector2d(48, -7.5))
                 .build();
 
         while(!isStarted()) {
@@ -82,6 +85,7 @@ public class RED_ALLIANCE_RIGHT extends LinearOpMode {
 
         CommandScheduler.getInstance().schedule(new SequentialCommandGroup(
 
+                //Grab Cone
                 new ParallelCommandGroup(
                         new InstantCommand(() -> robot.intake.update(IntakeSubsystem.ArmState.INTAKE)),
                         new InstantCommand(() -> robot.intake.update(IntakeSubsystem.RotateState.INTAKE)),
@@ -89,55 +93,48 @@ public class RED_ALLIANCE_RIGHT extends LinearOpMode {
                 ),
                 new WaitCommand(100),
                 new InstantCommand(() -> robot.intake.update(IntakeSubsystem.ClawState.CLOSED)),
-                new WaitCommand(200),
-                new SequentialCommandGroup(
-                        new TrajectoryFollowerCommand(robot.driveSubsystem, traj),
-                        new InstantCommand(() -> robot.intake.update(IntakeSubsystem.ArmState.DEPOSIT)),
-                        new InstantCommand(() -> robot.intake.update(IntakeSubsystem.RotateState.TRANSFER)),
-                        new WaitCommand(50),
-                        new TrajectoryFollowerCommand(robot.driveSubsystem, toConeStack)
-                ),
-
-                new SequentialCommandGroup(
-                        new InstantCommand(() -> robot.lift.update(LiftSubsystem.TurretState.RIGHT_POLE)),
-                        new LiftPositionCommand(robot.lift, 23, 2),
-                        new WaitCommand(400),
-                        new InstantCommand(() -> robot.intake.update(IntakeSubsystem.ClawState.OPEN)),
-                        new WaitCommand(200),
-                        new LiftPositionCommand(robot.lift, 6, 2),
-                        new ParallelCommandGroup(
-                                new InstantCommand(() -> robot.intake.update(IntakeSubsystem.RotateState.INTAKE)),
-                                new InstantCommand(() -> robot.intake.update(IntakeSubsystem.ArmState.INTAKE)),
-                                new InstantCommand(() -> robot.lift.update(LiftSubsystem.TurretState.STRAIGHT))
-
-                        )
-                ),
-
-                new TrajectoryFollowerCommand(robot.driveSubsystem, toConeOne),
-                new WaitCommand(200),
-                new InstantCommand(() -> robot.intake.update(IntakeSubsystem.ClawState.CLOSED)),
                 new WaitCommand(100),
+
+                //Drive towards mid point within the cone stack trajectory
+                new TrajectoryFollowerCommand(robot.driveSubsystem, traj),
+
+
+                //Lift Arm
                 new InstantCommand(() -> robot.intake.update(IntakeSubsystem.ArmState.DEPOSIT)),
                 new InstantCommand(() -> robot.intake.update(IntakeSubsystem.RotateState.TRANSFER)),
+
                 new WaitCommand(50),
+
+
+                //Drive to coneStack
+                new TrajectoryFollowerCommand(robot.driveSubsystem, toConeStack),
+
+                //Drop preload
+                new AutoDepositAndRetract(robot, 6.5),
+
+                //Drive to the first cone
+                new TrajectoryFollowerCommand(robot.driveSubsystem, toConeOne),
+                new WaitCommand(500),
+                new AutoPickUpConeCommand(robot),
+
+                //Drive to drop-off zone
                 new TrajectoryFollowerCommand(robot.driveSubsystem, toPole),
 
-        new SequentialCommandGroup(
-                new InstantCommand(() -> robot.lift.update(LiftSubsystem.TurretState.RIGHT_POLE)),
-                new LiftPositionCommand(robot.lift, 23, 2),
-                new WaitCommand(400),
-                new InstantCommand(() -> robot.intake.update(IntakeSubsystem.ClawState.OPEN)),
-                new WaitCommand(600),
-                new LiftPositionCommand(robot.lift, 5.75, 2),
-                new ParallelCommandGroup(
-                        new InstantCommand(() -> robot.intake.update(IntakeSubsystem.RotateState.INTAKE)),
-                        new InstantCommand(() -> robot.intake.update(IntakeSubsystem.ArmState.INTAKE)),
-                        new InstantCommand(() -> robot.lift.update(LiftSubsystem.TurretState.STRAIGHT))
+                //Drop off the first cone
+                new AutoDepositAndRetract(robot, 5.75),
 
-                )
-        )
+                new TrajectoryFollowerCommand(robot.driveSubsystem, toConeOne),
+                new WaitCommand(500),
+                new AutoPickUpConeCommand(robot),
 
-        ));
+                //Drive to drop-off zone
+                new TrajectoryFollowerCommand(robot.driveSubsystem, toPole),
+
+                //Drop off the first cone
+                new AutoDepositAndRetract(robot, 5)
+
+
+                ));
 
 
         robot.reset();
