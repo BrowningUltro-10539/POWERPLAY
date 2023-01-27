@@ -1,5 +1,9 @@
 package org.firstinspires.ftc.teamcode.subsystem;
 
+import static com.qualcomm.robotcore.util.Range.clip;
+
+import android.util.Range;
+
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.localization.Localizer;
@@ -23,6 +27,8 @@ public class MecanumDriveSubsystem extends SubsystemBase {
 
     private final SampleMecanumDrive drive;
     private final boolean fieldCentric;
+
+
 
     public MecanumDriveSubsystem(SampleMecanumDrive drive, boolean isFieldCentric) {
         this.drive = drive;
@@ -52,18 +58,29 @@ public class MecanumDriveSubsystem extends SubsystemBase {
     public void drive(double leftY, double leftX, double rightX) {
         Pose2d poseEstimate = getPoseEstimate();
 
+        double x = 0, y = 0, adjX = drive.xOffset - getPitch(), adjY = drive.yOffset - getYaw();
+
         Vector2d input = new Vector2d(-leftY, -leftX).rotated(
                 fieldCentric ? -poseEstimate.getHeading() : 0
         );
+
+        if(Math.abs(adjY) > Math.toRadians(2)) y = adjY;
+        if(Math.abs(adjX) > Math.toRadians(2)) x = adjX;
+
 
         drive.setWeightedDrivePower(
                 new Pose2d(
                         input.getX(),
                         input.getY(),
                         -rightX
-                )
-        );
+                ).plus(
+                        new Pose2d(
+                                clip(x*2, -0.9, 0.9), clip(y*2, -0.9, 0.9), 0)
+                        )
+                );
     }
+
+
 
     public void setDrivePower(Pose2d drivePower) {
         drive.setDrivePower(drivePower);
@@ -71,6 +88,14 @@ public class MecanumDriveSubsystem extends SubsystemBase {
 
     public Pose2d getPoseEstimate() {
         return drive.getPoseEstimate();
+    }
+
+    public double getPitch(){
+        return drive.getOrientation().secondAngle;
+    }
+
+    public double getYaw(){
+        return drive.getOrientation().thirdAngle;
     }
 
     public TrajectoryBuilder trajectoryBuilder(Pose2d startPose) {

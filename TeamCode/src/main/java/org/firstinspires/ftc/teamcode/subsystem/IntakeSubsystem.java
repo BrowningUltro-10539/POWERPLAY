@@ -66,7 +66,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
 
     public static double CLAW_OPEN = 0;
-    public static double CLAW_CLOSE = 0.5;
+    public static double CLAW_CLOSE = 0.6;
 
     public static double ROTATE_INTAKE = 0.98;
     public static double ROTATE_OUTTAKE = 0.3;
