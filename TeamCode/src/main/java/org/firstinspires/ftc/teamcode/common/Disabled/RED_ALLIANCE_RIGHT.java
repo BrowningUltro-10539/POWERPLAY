@@ -60,9 +60,15 @@ public class RED_ALLIANCE_RIGHT extends LinearOpMode {
                 .lineTo(new Vector2d(60.75, -7.5))
                 .build();
 
+
         Trajectory toPole = robot.driveSubsystem.trajectoryBuilder(toConeOne.end())
                 .lineTo(new Vector2d(48, -7.5))
                 .build();
+
+        Trajectory toConeTwo = robot.driveSubsystem.trajectoryBuilder(toPole.end())
+                .lineTo(new Vector2d(59.75, -7.5))
+                .build();
+
 
         while(!isStarted()) {
             robot.read();
@@ -123,7 +129,7 @@ public class RED_ALLIANCE_RIGHT extends LinearOpMode {
                 //Drop off the first cone
                 new AutoDepositAndRetract(robot, 5.75),
 
-                new TrajectoryFollowerCommand(robot.driveSubsystem, toConeOne),
+                new TrajectoryFollowerCommand(robot.driveSubsystem, toConeTwo),
                 new WaitCommand(500),
                 new AutoPickUpConeCommand(robot),
 
