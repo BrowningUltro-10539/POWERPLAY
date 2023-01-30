@@ -30,7 +30,7 @@ public class LiftSubsystem extends SubsystemBase {
     public final Servo funnel;
     public final Servo outtakeClaw;
 
-    public final RevColorSensorV3 colorSensorOut;
+
 
     private MotionProfile profile;
     public MotionState currentState;
@@ -108,7 +108,7 @@ public class LiftSubsystem extends SubsystemBase {
         this.turret = new MotorEx(hardwareMap, "turret");
         this.funnel = hardwareMap.get(Servo.class, "portC4");
         this.outtakeClaw = hardwareMap.get(Servo.class, "portE5");
-        this.colorSensorOut = hardwareMap.get(RevColorSensorV3.class, "colorSensorOut");
+
         this.timer = new ElapsedTime();
         timer.reset();
 
@@ -137,45 +137,8 @@ public class LiftSubsystem extends SubsystemBase {
     public void loop() {
         liftPower = liftController.calculate(liftPosition, liftTargetPosition) + Kg;
         turretPower = turretController.calculate(turretHeading, turretTargetAngle) / voltage * 12;
-
-        if(!isAuto) {
-            if(colorSensorOut.getDistance(DistanceUnit.CM) < 5 && liftState.equals(LiftState.READY_TO_INTAKE)){
-                CommandScheduler.getInstance().schedule(
-                        new SequentialCommandGroup(
-                                new WaitCommand(750),
-                                new InstantCommand(() -> outtakeClaw.setPosition(0))
-                        )
-                );
-            }
-        }
-
     }
 
-//    public void update(LiftState state){
-//        switch(state){
-//            case READY_TO_INTAKE:
-//                CommandScheduler.getInstance().schedule(
-//                       new LiftPositionCommand(this, 0, 0)
-//                );
-//                liftState = state;
-//                break;
-//            case HIGH_POLE_EXTEND:
-//                CommandScheduler.getInstance().schedule(
-//                        new ParallelCommandGroup(
-//                                new LiftPositionCommand(this, 15, 2)
-//                        )
-//                );
-//                liftState = state;
-//                break;
-//
-//            case MEDIUM:
-//                CommandScheduler.getInstance().schedule(
-//                        new LiftPositionCommand(this, 3, 0.5)
-//                );
-//                liftState = state;
-//                break;
-//        }
-//    }
 
     public void update(FunnelState state){
         switch(state){

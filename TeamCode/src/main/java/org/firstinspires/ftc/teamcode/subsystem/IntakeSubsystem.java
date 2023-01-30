@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystem;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.ParallelCommandGroup;
@@ -87,7 +88,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
     private boolean isAuto;
 
-    public enum IntakeState { INTAKE, DECIDE, TRANSFER, LOW_POLE, MANUAL, DEPOSIT, CLOSE_CLAW}
+    public enum IntakeState { INTAKE, DECIDE, OPEN_CLAW, CLOSE_CLAW}
     public enum ArmState { INTAKE, TRANSITION,  DEPOSIT }
     public enum ClawState { OPEN, CLOSED }
     public enum RotateState { INTAKE, MID, TRANSFER }
@@ -169,49 +170,50 @@ public class IntakeSubsystem extends SubsystemBase {
 
 
     public void update(IntakeState state){
-        switch(state){
-            case INTAKE:
-                CommandScheduler.getInstance().schedule(
-                        new SequentialCommandGroup()
-                );
-                intakeState = state;
+        if(!isAuto) {
+            switch (state) {
+                case INTAKE:
+                    CommandScheduler.getInstance().schedule(
+                            new SequentialCommandGroup(
+                                    new InstantCommand(() -> update(ClawState.OPEN)),
+                                    new WaitCommand(200),
+                                    new ParallelCommandGroup(
+                                            new InstantCommand(() -> update(RotateState.INTAKE)),
+                                            new InstantCommand(() -> update(ArmState.INTAKE))
 
-                break;
-            case DECIDE:
-                CommandScheduler.getInstance().schedule(
-                        new SequentialCommandGroup(
-                                new WaitCommand(100)
-                        )
-                );
-                intakeState = state;
-                break;
-            case TRANSFER:
-                CommandScheduler.getInstance().schedule(
-                        new SequentialCommandGroup(
-                                new WaitCommand(20)
-                        )
-                );
-                intakeState = state;
-                break;
+                                    )
+                            )
+                    );
+                    intakeState = state;
 
-            case LOW_POLE:
-                CommandScheduler.getInstance().schedule(
-                        new ParallelCommandGroup(
-                                new WaitCommand(30)
-                        )
-                );
-                intakeState = state;
-                break;
-            case MANUAL:
-                CommandScheduler.getInstance().schedule(
-                        new InstantCommand(() -> setClaw(0.5))
-                );
-                intakeState = state;
-                break;
-            case CLOSE_CLAW:
-                CommandScheduler.getInstance().schedule(
-                        new InstantCommand(() -> setClaw(0.8))
-                );
+                    break;
+                case DECIDE:
+                    CommandScheduler.getInstance().schedule(
+                            new SequentialCommandGroup(
+                                    new InstantCommand(() -> update(ClawState.CLOSED)),
+                                    new WaitCommand(300),
+                                    new ParallelCommandGroup(
+                                            new InstantCommand(() -> update(RotateState.TRANSFER)),
+                                            new InstantCommand(() -> update(ArmState.DEPOSIT))
+
+                                    )
+                            )
+                    );
+                    intakeState = state;
+                    break;
+                case OPEN_CLAW:
+                    CommandScheduler.getInstance().schedule(
+                            new InstantCommand(() -> update(ClawState.OPEN))
+                    );
+                    intakeState = state;
+                    break;
+                case CLOSE_CLAW:
+                    CommandScheduler.getInstance().schedule(
+                            new InstantCommand(() -> update(ClawState.CLOSED))
+                    );
+                    intakeState = state;
+                    break;
+            }
         }
     }
 

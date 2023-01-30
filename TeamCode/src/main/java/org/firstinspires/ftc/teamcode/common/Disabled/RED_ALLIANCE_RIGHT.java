@@ -21,6 +21,7 @@ import org.firstinspires.ftc.teamcode.commands.Auto.NewAutoCommands.LiftAndDropC
 import org.firstinspires.ftc.teamcode.commands.Auto.TrajectoryFollowerCommand;
 import org.firstinspires.ftc.teamcode.commands.AutoDepositAndRetract;
 import org.firstinspires.ftc.teamcode.commands.AutoPickUpConeCommand;
+import org.firstinspires.ftc.teamcode.commands.GrabConeDriveDepositReturnCommand;
 import org.firstinspires.ftc.teamcode.commands.LiftCommands.LiftPositionCommand;
 import org.firstinspires.ftc.teamcode.subsystem.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystem.LiftSubsystem;
@@ -107,8 +108,8 @@ public class RED_ALLIANCE_RIGHT extends LinearOpMode {
 
                 //Lift Arm
                 new InstantCommand(() -> robot.intake.update(IntakeSubsystem.ArmState.DEPOSIT)),
+                new WaitCommand(25),
                 new InstantCommand(() -> robot.intake.update(IntakeSubsystem.RotateState.TRANSFER)),
-
                 new WaitCommand(50),
 
 
@@ -120,25 +121,27 @@ public class RED_ALLIANCE_RIGHT extends LinearOpMode {
 
                 //Drive to the first cone
                 new TrajectoryFollowerCommand(robot.driveSubsystem, toConeOne),
-                new WaitCommand(500),
-                new AutoPickUpConeCommand(robot),
 
-                //Drive to drop-off zone
-                new TrajectoryFollowerCommand(robot.driveSubsystem, toPole),
+                new GrabConeDriveDepositReturnCommand(robot, toPole, toConeTwo, 5.75)
 
-                //Drop off the first cone
-                new AutoDepositAndRetract(robot, 5.75),
 
-                new TrajectoryFollowerCommand(robot.driveSubsystem, toConeTwo),
-                new WaitCommand(500),
-                new AutoPickUpConeCommand(robot),
-
-                //Drive to drop-off zone
-                new TrajectoryFollowerCommand(robot.driveSubsystem, toPole),
-
-                //Drop off the first cone
-                new AutoDepositAndRetract(robot, 5)
-
+//                new AutoPickUpConeCommand(robot),
+//
+//                //Drive to drop-off zone
+//                new TrajectoryFollowerCommand(robot.driveSubsystem, toPole),
+//
+//                //Drop off the first cone
+//                new AutoDepositAndRetract(robot, 5.75),
+//
+//                new TrajectoryFollowerCommand(robot.driveSubsystem, toConeTwo),
+//                new WaitCommand(500),
+//                new AutoPickUpConeCommand(robot),
+//
+//                //Drive to drop-off zone
+//                new TrajectoryFollowerCommand(robot.driveSubsystem, toPole),
+//
+//                //Drop off the first cone
+//                new AutoDepositAndRetract(robot, 5)
 
                 ));
 

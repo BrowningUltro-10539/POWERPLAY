@@ -14,13 +14,15 @@ import org.firstinspires.ftc.teamcode.subsystem.LiftSubsystem;
 public class AutoDepositAndRetract extends SequentialCommandGroup {
     public AutoDepositAndRetract(Robot robot, double returnSlidePos){
         super(
-                new InstantCommand(() -> robot.lift.update(LiftSubsystem.TurretState.RIGHT_POLE)),
-                new LiftPositionCommand(robot.lift, 23, 2),
-                new WaitCommand(400),
+                new ParallelCommandGroup(
+                        new InstantCommand(() -> robot.lift.update(LiftSubsystem.TurretState.RIGHT_POLE)),
+                        new LiftPositionCommand(robot.lift, 23, 2)
+                ),
+                new WaitCommand(100),
                 new InstantCommand(() -> robot.intake.update(IntakeSubsystem.ClawState.OPEN)),
                 new WaitCommand(200),
-                new LiftPositionCommand(robot.lift, returnSlidePos, 2),
                 new ParallelCommandGroup(
+                        new LiftPositionCommand(robot.lift, returnSlidePos, 2),
                         new InstantCommand(() -> robot.intake.update(IntakeSubsystem.RotateState.INTAKE)),
                         new InstantCommand(() -> robot.intake.update(IntakeSubsystem.ArmState.INTAKE)),
                         new InstantCommand(() -> robot.lift.update(LiftSubsystem.TurretState.STRAIGHT))
