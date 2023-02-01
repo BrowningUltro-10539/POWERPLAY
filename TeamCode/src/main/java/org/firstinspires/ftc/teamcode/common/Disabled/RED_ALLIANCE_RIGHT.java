@@ -53,21 +53,25 @@ public class RED_ALLIANCE_RIGHT extends LinearOpMode {
                 .build();
 
         Trajectory toConeStack = robot.driveSubsystem.trajectoryBuilder(traj.end())
-                .splineTo(new Vector2d(48, -7.5), Math.toRadians(0))
+                .splineTo(new Vector2d(41.5, -11), Math.toRadians(0))
 
                 .build();
 
         Trajectory toConeOne = robot.driveSubsystem.trajectoryBuilder(toConeStack.end())
-                .lineTo(new Vector2d(60.75, -7.5))
+                .lineTo(new Vector2d(60, -12))
                 .build();
 
 
         Trajectory toPole = robot.driveSubsystem.trajectoryBuilder(toConeOne.end())
-                .lineTo(new Vector2d(48, -7.5))
+                .lineTo(new Vector2d(39.7, -11))
                 .build();
 
         Trajectory toConeTwo = robot.driveSubsystem.trajectoryBuilder(toPole.end())
-                .lineTo(new Vector2d(59.75, -7.5))
+                .lineTo(new Vector2d(62.4, -12))
+                .build();
+
+        Trajectory toConeThree = robot.driveSubsystem.trajectoryBuilder(toPole.end())
+                .lineTo(new Vector2d(62, -12))
                 .build();
 
 
@@ -79,11 +83,23 @@ public class RED_ALLIANCE_RIGHT extends LinearOpMode {
             }
 
 
+            robot.intake.update(IntakeSubsystem.RotateState.INTAKE);
+            robot.intake.update(IntakeSubsystem.ArmState.INTAKE);
+            robot.intake.update(IntakeSubsystem.ClawState.OPEN);
+
+
+
+
 
             robot.intake.loop();
             robot.lift.loop();
 
             robot.write();
+
+            for(LynxModule module : robot.getControllers()){
+                module.clearBulkCache();
+            }
+
         }
 
 
@@ -93,12 +109,12 @@ public class RED_ALLIANCE_RIGHT extends LinearOpMode {
         CommandScheduler.getInstance().schedule(new SequentialCommandGroup(
 
                 //Grab Cone
-                new ParallelCommandGroup(
-                        new InstantCommand(() -> robot.intake.update(IntakeSubsystem.ArmState.INTAKE)),
-                        new InstantCommand(() -> robot.intake.update(IntakeSubsystem.RotateState.INTAKE)),
-                        new InstantCommand(() -> robot.intake.update(IntakeSubsystem.ClawState.OPEN))
-                ),
-                new WaitCommand(100),
+//                new ParallelCommandGroup(
+//                        new InstantCommand(() -> robot.intake.update(IntakeSubsystem.ArmState.INTAKE)),
+//                        new InstantCommand(() -> robot.intake.update(IntakeSubsystem.RotateState.INTAKE)),
+//                        new InstantCommand(() -> robot.intake.update(IntakeSubsystem.ClawState.OPEN))
+//                ),
+//                new WaitCommand(100),
                 new InstantCommand(() -> robot.intake.update(IntakeSubsystem.ClawState.CLOSED)),
                 new WaitCommand(100),
 
@@ -121,8 +137,10 @@ public class RED_ALLIANCE_RIGHT extends LinearOpMode {
 
                 //Drive to the first cone
                 new TrajectoryFollowerCommand(robot.driveSubsystem, toConeOne),
-
+                new WaitCommand(200),
                 new GrabConeDriveDepositReturnCommand(robot, toPole, toConeTwo, 5.75)
+//                new WaitCommand(1000),
+//                new GrabConeDriveDepositReturnCommand(robot, toPole, toConeOne, 4.75)
 
 
 //                new AutoPickUpConeCommand(robot),
@@ -167,6 +185,7 @@ public class RED_ALLIANCE_RIGHT extends LinearOpMode {
             telemetry.addData("Lift Pos", robot.lift.getLiftPos());
             telemetry.addData("Lift Target Pos", robot.lift.liftTargetPosition);
             telemetry.addData("Lift Turret Power", robot.lift.turretPower);
+            telemetry.addData("Robot Pose: ", robot.driveSubsystem.getLocalizer().getPoseEstimate());
             loopTime = loop;
             telemetry.update();
 

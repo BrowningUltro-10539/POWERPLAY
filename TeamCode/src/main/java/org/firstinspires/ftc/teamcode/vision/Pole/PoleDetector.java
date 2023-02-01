@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.vision.Pole;
 
 
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -36,6 +37,8 @@ public class PoleDetector {
             @Override
             public void onError(int errorCode) {}
         });
+
+        FtcDashboard.getInstance().startCameraStream(webcam, 60);
     }
 
     public double centerX() {

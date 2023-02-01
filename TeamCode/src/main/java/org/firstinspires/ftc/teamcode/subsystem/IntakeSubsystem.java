@@ -68,15 +68,19 @@ public class IntakeSubsystem extends SubsystemBase {
     public boolean autoAim = false;
 
 
-    public static double CLAW_OPEN = 0;
-    public static double CLAW_CLOSE = 0.6;
+    public static double CLAW_OPEN = 0.0;
+    public static double CLAW_CLOSE = 0.65;
 
     public static double ROTATE_INTAKE = 0.97;
     public static double ROTATE_OUTTAKE = 0.37;
     public static double ROTATE_MID = 0.25;
 
-    public static double ARM_DOWN = 1;
-    public static double ARM_UP = 0.52;
+    public static double ARM_DOWN = 0.97;
+    public static double ARM_UP = 0.51;
+    public static double ARM_DUNK = 0.46;
+
+    public static double LOW_POLE = 0.75;
+
 
     public DualAngle[] FIVE_STACK_POSITIONS = new DualAngle[]{
             new DualAngle(65,0.10),
@@ -88,8 +92,8 @@ public class IntakeSubsystem extends SubsystemBase {
 
     private boolean isAuto;
 
-    public enum IntakeState { INTAKE, DECIDE, OPEN_CLAW, CLOSE_CLAW}
-    public enum ArmState { INTAKE, TRANSITION,  DEPOSIT }
+    public enum IntakeState { INTAKE, DECIDE, OPEN_CLAW, CLOSE_CLAW, LOW_POLE}
+    public enum ArmState { INTAKE, TRANSITION,  DEPOSIT, DUNK, LOW_POLE}
     public enum ClawState { OPEN, CLOSED }
     public enum RotateState { INTAKE, MID, TRANSFER }
 
@@ -163,6 +167,12 @@ public class IntakeSubsystem extends SubsystemBase {
             case DEPOSIT:
                 setArm(ARM_UP);
                 break;
+            case DUNK:
+                setArm(ARM_DUNK);
+                break;
+            case LOW_POLE:
+                setArm(LOW_POLE);
+                break;
         }
     }
 
@@ -213,6 +223,12 @@ public class IntakeSubsystem extends SubsystemBase {
                     );
                     intakeState = state;
                     break;
+                case LOW_POLE:
+                    CommandScheduler.getInstance().schedule(
+                            new InstantCommand(() -> update(ArmState.LOW_POLE)),
+                            new InstantCommand(() -> update(RotateState.INTAKE))
+
+                    );
             }
         }
     }
@@ -220,7 +236,7 @@ public class IntakeSubsystem extends SubsystemBase {
     public void read(){ colorSensorDistance = colorSensor.getDistance(DistanceUnit.CM); }
 
     public void loop(){
-        if(colorSensor.getDistance(DistanceUnit.CM) < 4 && intakeState.equals(IntakeState.INTAKE)){
+        if(colorSensor.getDistance(DistanceUnit.CM) < 1 && intakeState.equals(IntakeState.INTAKE)){
             update(IntakeState.DECIDE);
         }
     }

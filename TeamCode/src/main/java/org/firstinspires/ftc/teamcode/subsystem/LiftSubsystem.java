@@ -53,12 +53,17 @@ public class LiftSubsystem extends SubsystemBase {
     public static double D = 0.00000;
     public static double Kg = 0.045;
 
+    public static double mP = 0.25;
+    public static double mI = 0;
+    public static double mD = 0;
+    public static double mKg = 0.043;
+
     private final double SLIDE_TICKS_PER_INCH = 2 * Math.PI * 1.38952756 / 384.5;
 
-    private final double Pt = 0.1;
+    private final double Pt = 0.05;
     private final double It = 0.0;
-    private final double Dt = 0.0001;
-    private final double Ft = 0.0001;
+    private final double Dt = 0.0000;
+    private final double Ft = 0.0000;
 
     private boolean isAuto = false;
 
@@ -98,13 +103,13 @@ public class LiftSubsystem extends SubsystemBase {
         LEFT_POLE,
         RIGHT_POLE,
         NEG_NINETY,
-        POS_NINETY
+        POS_NINETY,
+        AUTO_STACK_RIGHT_POLE
     }
 
 
     public LiftSubsystem(HardwareMap hardwareMap, boolean isAuto){
         this.lift1 = new MotorEx(hardwareMap, "vertical_slide");
-        this.lift1.setInverted(true);
         this.turret = new MotorEx(hardwareMap, "turret");
         this.funnel = hardwareMap.get(Servo.class, "portC4");
         this.outtakeClaw = hardwareMap.get(Servo.class, "portE5");
@@ -122,7 +127,7 @@ public class LiftSubsystem extends SubsystemBase {
         this.voltageTimer = new ElapsedTime();
         voltageTimer.reset();
 
-        this.liftController = new PIDController(P, I, D);
+        this.liftController = new PIDController(mP, mI, mD);
         liftController.setPID(P, I, D);
 
         this.turretController = new PIDController(Pt, It, Dt);
@@ -135,9 +140,25 @@ public class LiftSubsystem extends SubsystemBase {
     }
 
     public void loop() {
-        liftPower = liftController.calculate(liftPosition, liftTargetPosition) + Kg;
+        liftPower = liftController.calculate(liftPosition, liftTargetPosition) + mKg;
         turretPower = turretController.calculate(turretHeading, turretTargetAngle) / voltage * 12;
+
+//        if(voltageTimer.seconds() > 5){
+//            voltage = voltageSensor.getVoltage();
+//            voltageTimer.reset();
+//        }
+//
+//        currentState = profile.get(timer.time());
+//        if(currentState.getV() != 0){
+//            liftTargetPosition = currentState.getX();
+//        }
+//
+//        liftPower = (liftController.calculate(liftPosition, liftTargetPosition) + Kg) / (voltage * 14);
+
+
     }
+
+
 
 
     public void update(FunnelState state){
@@ -164,7 +185,7 @@ public class LiftSubsystem extends SubsystemBase {
                 turretState = state;
                 break;
             case RIGHT_POLE:
-                setTargetTurretAngle(21.5);
+                setTargetTurretAngle(24);
                 turretState = state;
                 break;
             case POS_NINETY:
@@ -173,6 +194,10 @@ public class LiftSubsystem extends SubsystemBase {
                 break;
             case NEG_NINETY:
                 setTargetTurretAngle(-90);
+                turretState = state;
+                break;
+            case AUTO_STACK_RIGHT_POLE:
+                setTargetTurretAngle(23);
                 turretState = state;
                 break;
         }
@@ -219,6 +244,8 @@ public class LiftSubsystem extends SubsystemBase {
         profile = MotionProfileGenerator.generateSimpleMotionProfile(new MotionState(getLiftPos(), 0), new MotionState(targetPos, 0), max_v, max_a);
         resetTimer();
     }
+
+
 
 
 }

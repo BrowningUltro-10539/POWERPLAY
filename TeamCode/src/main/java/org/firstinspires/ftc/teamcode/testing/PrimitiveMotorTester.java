@@ -14,7 +14,7 @@ public class PrimitiveMotorTester extends LinearOpMode {
 
 
 
-    public DcMotorEx intakeTurret;
+
     public Servo armLeft;
     public Servo armRight;
     public Servo claw;
@@ -40,7 +40,7 @@ public class PrimitiveMotorTester extends LinearOpMode {
     @Override
     public void runOpMode(){
 
-        intakeTurret = hardwareMap.get(DcMotorEx.class, "intakeTurret");
+
         turret = hardwareMap.get(DcMotorEx.class, "turret");
         armLeft = hardwareMap.get(Servo.class, "portC0");
         armRight = hardwareMap.get(Servo.class, "portC2");
@@ -60,72 +60,18 @@ public class PrimitiveMotorTester extends LinearOpMode {
 
         while(opModeIsActive()){
 
-            //Turret Rotation Values
-            // Considers the turret from the slide closest to the value
 
-            //right, arm on left side = -214
-            //left, arm on right side = 243
-
-
-//            if(gamepad1.a){
-//                armLeft.setPosition(0.67);
-//                armRight.setPosition(1 - 0.67);
-//            }
-//
-//            if(gamepad1.b){
-//                armLeft.setPosition(1);
-//                armRight.setPosition(0);
-//            }
-//
-//            if(gamepad1.x){
-//                claw.setPosition(1);
-//            }
-//
-//            if(gamepad1.y){
-//                claw.setPosition(0);
-//            }
-//
-//            if (gamepad2.dpad_up) {
-//                DESIRED = HIGH;
-//                vertical.setTargetPosition(HIGH);
-//                vertical.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//                vertical.setPower(1);
-//            }
-//
-//            if (gamepad2.dpad_left) {
-//                DESIRED = MEDIUM;
-//                vertical.setTargetPosition(MEDIUM);
-//                vertical.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//                vertical.setPower(1);
-//            }
-//
-//            if (gamepad2.dpad_right) {
-//                DESIRED = LOW;
-//                vertical.setTargetPosition(LOW);
-//                vertical.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//                vertical.setPower(1);
-//            }
-//
-//            if(gamepad2.a){
-//                flip.setPosition(0.7);
-//            }
-//
-//            if(gamepad2.b){
-//                flip.setPosition(0.3);
-//            }
-
-//            turret.setPower(gamepad2.left_stick_y);
 
             turret.setPower(gamepad1.left_stick_y);
 
             vertical.setPower(gamepad1.right_stick_y);
 
             if(gamepad1.a){
-                armRight.setPosition(servoPosition);
+                setArm(0.52);
             }
 
             if(gamepad1.b){
-                armLeft.setPosition(servoPosition);
+                setArm(1);
             }
 
 
@@ -145,5 +91,10 @@ public class PrimitiveMotorTester extends LinearOpMode {
         }
 
 
+    }
+
+    public void setArm(double pos){
+        armLeft.setPosition(pos);
+        armRight.setPosition(1 - pos);
     }
 }

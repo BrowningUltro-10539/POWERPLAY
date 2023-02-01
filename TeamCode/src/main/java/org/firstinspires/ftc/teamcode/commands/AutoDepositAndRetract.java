@@ -16,18 +16,23 @@ public class AutoDepositAndRetract extends SequentialCommandGroup {
         super(
                 new ParallelCommandGroup(
                         new InstantCommand(() -> robot.lift.update(LiftSubsystem.TurretState.RIGHT_POLE)),
-                        new LiftPositionCommand(robot.lift, 23, 2)
+                        new LiftPositionCommand(robot.lift, 16.5, 2)
                 ),
                 new WaitCommand(100),
+                new InstantCommand(() -> robot.intake.update(IntakeSubsystem.ArmState.DUNK)),
+                new WaitCommand(500),
                 new InstantCommand(() -> robot.intake.update(IntakeSubsystem.ClawState.OPEN)),
-                new WaitCommand(200),
+                new WaitCommand(500),
+                new InstantCommand(() -> robot.intake.update(IntakeSubsystem.ArmState.DEPOSIT)),
+                new WaitCommand(500),
                 new ParallelCommandGroup(
                         new LiftPositionCommand(robot.lift, returnSlidePos, 2),
-                        new InstantCommand(() -> robot.intake.update(IntakeSubsystem.RotateState.INTAKE)),
-                        new InstantCommand(() -> robot.intake.update(IntakeSubsystem.ArmState.INTAKE)),
+
                         new InstantCommand(() -> robot.lift.update(LiftSubsystem.TurretState.STRAIGHT))
 
-                )
+                ),
+                new InstantCommand(() -> robot.intake.update(IntakeSubsystem.RotateState.INTAKE)),
+                new InstantCommand(() -> robot.intake.update(IntakeSubsystem.ArmState.INTAKE))
         );
     }
 }

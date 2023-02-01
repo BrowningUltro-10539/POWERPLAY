@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.controller.PIDController;
+import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -15,6 +16,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Robot;
+
+import java.util.List;
 
 @Config
 @TeleOp
@@ -33,7 +36,7 @@ public class IntakeTurretPIDTune extends OpMode {
 
 
     public static double slideP = 0, slideI = 0, slideD = 0;
-    public static double kG = 0.045;
+    public static double kG = 0.0;
 
     public static double servoPosition = 0.5;
 
@@ -67,6 +70,8 @@ public class IntakeTurretPIDTune extends OpMode {
 
     public Robot robot;
 
+
+
     public static double slideTarget = 0;
 
 
@@ -97,11 +102,14 @@ public class IntakeTurretPIDTune extends OpMode {
         colorSensorOut = hardwareMap.get(RevColorSensorV3.class, "colorSensorOut");
 
 
+
         slide_motor1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         slide_motor1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         intakeTurret.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         intakeTurret.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+
 
 
 
@@ -180,6 +188,9 @@ public class IntakeTurretPIDTune extends OpMode {
         }
 
 
+        for(LynxModule module : robot.getControllers()){
+            module.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
+        }
 
         intakeTurret.setPower(turretPid);
 

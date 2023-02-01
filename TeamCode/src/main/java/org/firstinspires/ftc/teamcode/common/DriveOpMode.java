@@ -73,42 +73,41 @@ public class DriveOpMode extends CommandOpMode {
         }
 
         if(gamepad1.x){
-            schedule(new InstantCommand(() -> robot.intake.update(IntakeSubsystem.IntakeState.DECIDE)));
+            schedule(new InstantCommand(() -> robot.intake.update(IntakeSubsystem.IntakeState.LOW_POLE)));
         }
 
         if(gamepad1.y){
             schedule(new SequentialCommandGroup(
-                    new InstantCommand(() -> robot.intake.update(IntakeSubsystem.IntakeState.DECIDE)),
-                    new LiftPositionCommand(robot.lift, 7, 2)));
+                    new LiftPositionCommand(robot.lift,4, 2),
+                    new InstantCommand(() -> robot.intake.update(IntakeSubsystem.IntakeState.DECIDE))));
         }
 
         if(gamepad1.b){
             schedule(new SequentialCommandGroup(
-                    new InstantCommand(() -> robot.intake.update(IntakeSubsystem.IntakeState.DECIDE)),
-                    new LiftPositionCommand(robot.lift, 23, 2)
+                    new LiftPositionCommand(robot.lift, 16.5, 2),
+                    new InstantCommand(() -> robot.intake.update(IntakeSubsystem.IntakeState.DECIDE))
             ));
         }
 
         if(gamepad1.a){
             schedule(new SequentialCommandGroup(
                         new InstantCommand(() -> robot.intake.update(IntakeSubsystem.IntakeState.OPEN_CLAW)),
-                        new WaitCommand(200),
+                        new WaitCommand(500),
                         new LiftPositionCommand(robot.lift, 0, 2),
                         new InstantCommand(() -> robot.intake.update(IntakeSubsystem.IntakeState.INTAKE)),
                         new InstantCommand(() -> robot.lift.update(LiftSubsystem.TurretState.STRAIGHT))
-
             ));
         }
 
-        if(gamepad2.left_bumper){
+        if(gamepad1.left_bumper){
             schedule(new InstantCommand(() -> robot.lift.update(LiftSubsystem.TurretState.LEFT_POLE)));
         }
 
-        if(gamepad2.right_bumper){
+        if(gamepad1.right_bumper){
             schedule(new InstantCommand(() -> robot.lift.update(LiftSubsystem.TurretState.RIGHT_POLE)));
         }
 
-        if(gamepad2.a){
+        if(gamepad1.dpad_down){
             schedule(new InstantCommand(() -> robot.lift.update(LiftSubsystem.TurretState.STRAIGHT)));
         }
 
