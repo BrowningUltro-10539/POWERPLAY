@@ -78,13 +78,13 @@ public class DriveOpMode extends CommandOpMode {
 
         if(gamepad1.y){
             schedule(new SequentialCommandGroup(
-                    new LiftPositionCommand(robot.lift,4, 2),
-                    new InstantCommand(() -> robot.intake.update(IntakeSubsystem.IntakeState.DECIDE))));
+                    new LiftPositionCommand(robot.lift,3.5, 2),
+                    new InstantCommand(() -> robot.intake.update(IntakeSubsystem.IntakeState.MEDIUM_POLE))));
         }
 
         if(gamepad1.b){
             schedule(new SequentialCommandGroup(
-                    new LiftPositionCommand(robot.lift, 16.5, 2),
+                    new LiftPositionCommand(robot.lift, 17, 2),
                     new InstantCommand(() -> robot.intake.update(IntakeSubsystem.IntakeState.DECIDE))
             ));
         }
@@ -94,22 +94,12 @@ public class DriveOpMode extends CommandOpMode {
                         new InstantCommand(() -> robot.intake.update(IntakeSubsystem.IntakeState.OPEN_CLAW)),
                         new WaitCommand(500),
                         new LiftPositionCommand(robot.lift, 0, 2),
-                        new InstantCommand(() -> robot.intake.update(IntakeSubsystem.IntakeState.INTAKE)),
-                        new InstantCommand(() -> robot.lift.update(LiftSubsystem.TurretState.STRAIGHT))
+                        new InstantCommand(() -> robot.intake.update(IntakeSubsystem.IntakeState.INTAKE))
+
             ));
         }
 
-        if(gamepad1.left_bumper){
-            schedule(new InstantCommand(() -> robot.lift.update(LiftSubsystem.TurretState.LEFT_POLE)));
-        }
 
-        if(gamepad1.right_bumper){
-            schedule(new InstantCommand(() -> robot.lift.update(LiftSubsystem.TurretState.RIGHT_POLE)));
-        }
-
-        if(gamepad1.dpad_down){
-            schedule(new InstantCommand(() -> robot.lift.update(LiftSubsystem.TurretState.STRAIGHT)));
-        }
 
 
         if(gamepad1.right_bumper){
@@ -152,11 +142,12 @@ public class DriveOpMode extends CommandOpMode {
 //        }
 
 
+
+
         schedule(new MecanumDriveCommand(robot.driveSubsystem, () -> -gamepad1.left_stick_y, () -> -gamepad1.left_stick_x, () -> gamepad1.right_stick_x));
 
 
-        robot.intake.setLiftTurretState(robot.lift.turretState);
-        robot.intake.setLiftTurretCurrentAngle(robot.lift.getTurretAngle());
+
 
         robot.intake.loop();
         robot.lift.loop();
@@ -180,7 +171,6 @@ public class DriveOpMode extends CommandOpMode {
 
     @Override
     public void reset(){
-        schedule(new InstantCommand(() -> robot.lift.update(LiftSubsystem.TurretState.STRAIGHT)));
         CommandScheduler.getInstance().reset();
     }
 

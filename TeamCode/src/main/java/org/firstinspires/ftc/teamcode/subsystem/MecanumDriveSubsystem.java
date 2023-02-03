@@ -14,6 +14,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
 import org.firstinspires.ftc.teamcode.rr.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.rr.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.rr.trajectorysequence.TrajectorySequenceBuilder;
 
 import java.util.List;
@@ -102,6 +103,7 @@ public class MecanumDriveSubsystem extends SubsystemBase {
         return drive.trajectoryBuilder(startPose);
     }
 
+
     public TrajectoryBuilder trajectoryBuilder(Pose2d startPose, boolean reversed) {
         return drive.trajectoryBuilder(startPose, reversed);
     }
@@ -118,6 +120,10 @@ public class MecanumDriveSubsystem extends SubsystemBase {
         drive.followTrajectoryAsync(trajectory);
     }
 
+    public void followTrajectorySequence(TrajectorySequence trajectorySequence){
+        drive.followTrajectorySequenceAsync(trajectorySequence);
+    }
+
     public boolean isBusy() {
         return drive.isBusy();
     }
@@ -126,9 +132,9 @@ public class MecanumDriveSubsystem extends SubsystemBase {
         drive.turnAsync(radians);
     }
 
-    public List<Double> getWheelVelocities() {
-        return drive.getWheelVelocities();
-    }
+//    public List<Double> getWheelVelocities() {
+//        return drive.getWheelVelocities();
+//    }
 
     public void stop() {
         drive(0, 0, 0);

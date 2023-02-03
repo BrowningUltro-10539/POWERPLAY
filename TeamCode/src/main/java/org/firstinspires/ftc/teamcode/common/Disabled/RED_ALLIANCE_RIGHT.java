@@ -5,26 +5,20 @@ import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.InstantCommand;
-import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.apache.commons.math3.stat.descriptive.moment.VectorialCovariance;
 import org.firstinspires.ftc.teamcode.Robot;
-import org.firstinspires.ftc.teamcode.commands.Auto.NewAutoCommands.GrabConeFromStackCommand;
-import org.firstinspires.ftc.teamcode.commands.Auto.NewAutoCommands.LiftAndDropConeCommand;
+
 import org.firstinspires.ftc.teamcode.commands.Auto.TrajectoryFollowerCommand;
-import org.firstinspires.ftc.teamcode.commands.AutoDepositAndRetract;
-import org.firstinspires.ftc.teamcode.commands.AutoPickUpConeCommand;
-import org.firstinspires.ftc.teamcode.commands.GrabConeDriveDepositReturnCommand;
-import org.firstinspires.ftc.teamcode.commands.LiftCommands.LiftPositionCommand;
+import org.firstinspires.ftc.teamcode.commands.Auto.Testing.AutoDepositAndRetract;
+import org.firstinspires.ftc.teamcode.commands.Auto.Testing.GrabConeDriveDepositReturnCommand;
+import org.firstinspires.ftc.teamcode.rr.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.subsystem.IntakeSubsystem;
-import org.firstinspires.ftc.teamcode.subsystem.LiftSubsystem;
 import org.openftc.easyopencv.OpenCvCamera;
 
 @Autonomous
@@ -53,25 +47,29 @@ public class RED_ALLIANCE_RIGHT extends LinearOpMode {
                 .build();
 
         Trajectory toConeStack = robot.driveSubsystem.trajectoryBuilder(traj.end())
-                .splineTo(new Vector2d(41.5, -11), Math.toRadians(0))
+                .splineTo(new Vector2d(41.5, -11.5), Math.toRadians(360-42))
 
                 .build();
 
         Trajectory toConeOne = robot.driveSubsystem.trajectoryBuilder(toConeStack.end())
-                .lineTo(new Vector2d(60, -12))
+                .lineToLinearHeading(new Pose2d(63, -10, Math.toRadians(360)))
                 .build();
 
 
         Trajectory toPole = robot.driveSubsystem.trajectoryBuilder(toConeOne.end())
-                .lineTo(new Vector2d(39.7, -11))
+                .lineToLinearHeading(new Pose2d(41.5, -11.5, Math.toRadians(360-32)))
                 .build();
 
         Trajectory toConeTwo = robot.driveSubsystem.trajectoryBuilder(toPole.end())
-                .lineTo(new Vector2d(62.4, -12))
+                .lineToLinearHeading(new Pose2d(62.4, -12, Math.toRadians(360)))
                 .build();
 
         Trajectory toConeThree = robot.driveSubsystem.trajectoryBuilder(toPole.end())
                 .lineTo(new Vector2d(62, -12))
+                .build();
+
+        TrajectorySequence testing = robot.driveSubsystem.trajectorySequenceBuilder(toPole.end())
+                .lineTo(new Vector2d(-35, -60))
                 .build();
 
 
@@ -122,6 +120,7 @@ public class RED_ALLIANCE_RIGHT extends LinearOpMode {
                 new TrajectoryFollowerCommand(robot.driveSubsystem, traj),
 
 
+
                 //Lift Arm
                 new InstantCommand(() -> robot.intake.update(IntakeSubsystem.ArmState.DEPOSIT)),
                 new WaitCommand(25),
@@ -130,15 +129,32 @@ public class RED_ALLIANCE_RIGHT extends LinearOpMode {
 
 
                 //Drive to coneStack
+
                 new TrajectoryFollowerCommand(robot.driveSubsystem, toConeStack),
 
-                //Drop preload
+//                Drop preload
                 new AutoDepositAndRetract(robot, 6.5),
 
                 //Drive to the first cone
+
+                new WaitCommand(500),
+
+                new InstantCommand(() -> robot.driveSubsystem.turn(Math.toRadians(42))),
+                new WaitCommand(1500),
                 new TrajectoryFollowerCommand(robot.driveSubsystem, toConeOne),
-                new WaitCommand(200),
+                new WaitCommand(1500),
                 new GrabConeDriveDepositReturnCommand(robot, toPole, toConeTwo, 5.75)
+//                new WaitCommand(2000),
+//                new TrajectoryFollowerCommand(robot.driveSubsystem, toPole),
+//                new WaitCommand(2000),
+//                new TrajectoryFollowerCommand(robot.driveSubsystem, toConeOne),
+//                new WaitCommand(2000),
+//                new TrajectoryFollowerCommand(robot.driveSubsystem, toPole),
+//                new WaitCommand(2000)
+
+
+//                new WaitCommand(200),
+//                new GrabConeDriveDepositReturnCommand(robot, toPole, toConeTwo, 5.75)
 //                new WaitCommand(1000),
 //                new GrabConeDriveDepositReturnCommand(robot, toPole, toConeOne, 4.75)
 
@@ -171,8 +187,7 @@ public class RED_ALLIANCE_RIGHT extends LinearOpMode {
 
             CommandScheduler.getInstance().run();
 
-            robot.intake.setLiftTurretState(robot.lift.turretState);
-            robot.intake.setLiftTurretCurrentAngle(robot.lift.getTurretAngle());
+
 
             robot.intake.loop();
             robot.lift.loop();
@@ -184,7 +199,6 @@ public class RED_ALLIANCE_RIGHT extends LinearOpMode {
             telemetry.addData("hz ", 1000000000 / (loop - loopTime));
             telemetry.addData("Lift Pos", robot.lift.getLiftPos());
             telemetry.addData("Lift Target Pos", robot.lift.liftTargetPosition);
-            telemetry.addData("Lift Turret Power", robot.lift.turretPower);
             telemetry.addData("Robot Pose: ", robot.driveSubsystem.getLocalizer().getPoseEstimate());
             loopTime = loop;
             telemetry.update();

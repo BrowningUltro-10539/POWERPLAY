@@ -22,50 +22,20 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @Config
 public class IntakeSubsystem extends SubsystemBase {
-    private final ServoImplEx rotate;
-    private final Servo claw;
+
     private final Servo leftArm;
     private final Servo rightArm;
+    private final ServoImplEx rotate;
+    private final Servo claw;
 
     private final RevColorSensorV3 colorSensor;
 
     private final ElapsedTime timer;
     private final ElapsedTime voltageTimer;
 
-    private PIDController turretController;
-    private PIDController armController;
-
-
-    public static double Pt = 0.03;
-    public static double It = 0;
-    public static double Dt = 0.0004;
-
-    public static double Pa = 0.057;
-    public static double Ia = 0.00001;
-    public static double Da = 0.001;
-    public static double Fa = 0.072;
 
     private final VoltageSensor voltageSensor;
     private double voltage;
-
-    private double turretPosition = 0;
-    private double turretAngle = 0;
-    private double turretTargetPosition = 0;
-    private double turretTargetAngle = 0;
-    private double turretPower = 0;
-
-    private double armPosition = 0;
-    private double armAngle = 0;
-    private double armAbsoluteAngle = 0;
-    private double armTargetPosition = 0;
-    private double armTargetAngle = 0;
-    private double armPower = 0;
-    private double position = 0;
-
-    private double colorSensorDistance;
-
-
-    public boolean autoAim = false;
 
 
     public static double CLAW_OPEN = 0.0;
@@ -78,34 +48,23 @@ public class IntakeSubsystem extends SubsystemBase {
     public static double ARM_DOWN = 0.97;
     public static double ARM_UP = 0.51;
     public static double ARM_DUNK = 0.46;
-
-    public static double LOW_POLE = 0.75;
-
-
-    public DualAngle[] FIVE_STACK_POSITIONS = new DualAngle[]{
-            new DualAngle(65,0.10),
-            new DualAngle(60,0.10),
-            new DualAngle(55,0.12),
-            new DualAngle(35,0.10),
-            new DualAngle(30,0.10)
-    };
+    public static double LOW_POLE = 0.8;
 
     private boolean isAuto;
 
-    public enum IntakeState { INTAKE, DECIDE, OPEN_CLAW, CLOSE_CLAW, LOW_POLE}
+    public enum IntakeState { INTAKE, DECIDE, OPEN_CLAW, CLOSE_CLAW, LOW_POLE, MEDIUM_POLE}
     public enum ArmState { INTAKE, TRANSITION,  DEPOSIT, DUNK, LOW_POLE}
     public enum ClawState { OPEN, CLOSED }
     public enum RotateState { INTAKE, MID, TRANSFER }
 
-
     public IntakeState intakeState = IntakeState.INTAKE;
 
-    public LiftSubsystem.TurretState liftTurretState;
-    private double liftTurretAngle = 0;
 
     public IntakeSubsystem(HardwareMap hardwareMap, boolean isAuto){
+
         this.rotate = hardwareMap.get(ServoImplEx.class, "portC4");
         this.rotate.setPwmRange(new PwmControl.PwmRange(500, 2500));
+
         this.claw = hardwareMap.get(Servo.class, "portC5");
 
         this.leftArm = hardwareMap.get(Servo.class, "portC0");
@@ -121,12 +80,6 @@ public class IntakeSubsystem extends SubsystemBase {
 
         this.voltageSensor = hardwareMap.voltageSensor.iterator().next();
         this.voltage = voltageSensor.getVoltage();
-
-        this.turretController = new PIDController(Pt, It, Dt);
-        turretController.setPID(Pt, It, Dt);
-
-        this.armController = new PIDController(Pa, Ia, Da);
-        armController.setPID(Pa, Ia, Da);
 
         this.isAuto = isAuto;
     }
@@ -175,9 +128,6 @@ public class IntakeSubsystem extends SubsystemBase {
                 break;
         }
     }
-
-
-
 
     public void update(IntakeState state){
         if(!isAuto) {
@@ -229,33 +179,28 @@ public class IntakeSubsystem extends SubsystemBase {
                             new InstantCommand(() -> update(RotateState.INTAKE))
 
                     );
+                    break;
+                case MEDIUM_POLE:
+                    CommandScheduler.getInstance().schedule(new SequentialCommandGroup(
+                                    new InstantCommand(() -> update(ArmState.DUNK)),
+                                    new InstantCommand(() -> update(ClawState.CLOSED)),
+                                    new InstantCommand(() -> update(RotateState.TRANSFER))
+                    )
+
+                    );
+                    break;
             }
         }
     }
 
-    public void read(){ colorSensorDistance = colorSensor.getDistance(DistanceUnit.CM); }
+    public void read(){}
+    public void write(){}
 
     public void loop(){
         if(colorSensor.getDistance(DistanceUnit.CM) < 1 && intakeState.equals(IntakeState.INTAKE)){
             update(IntakeState.DECIDE);
         }
     }
-
-    public void write(){}
-
-
-    public void setTurretTargetPosition(double position){ turretTargetPosition = position; }
-    public void setTurretTargetAngle(double angle){ turretTargetAngle = angle; }
-    public double getTurretAngle(){ return turretAngle; }
-
-    public void setArmTargetPosition(double position){ armTargetPosition = position; }
-    public void setArmTargetAngle(double angle){ armTargetAngle = angle; }
-    public double getArmAngle(){ return armAngle; }
-
-
-    public void setLiftTurretCurrentAngle(double angle){ liftTurretAngle = angle; }
-    public void setLiftTurretState(LiftSubsystem.TurretState state) { liftTurretState = state;  }
-    public double getLiftTurretAngle() { return liftTurretAngle; }
 
 
 
@@ -266,31 +211,11 @@ public class IntakeSubsystem extends SubsystemBase {
         claw.setPosition(pos);
     }
 
-
-
     public void setArm(double pos){
         leftArm.setPosition(pos);
         rightArm.setPosition(1 - pos);
     }
 
-    public static class DualAngle {
-        private double armAngle = 0;
-        private double pivotPosition = 0;
-
-        public DualAngle(double armAngle, double pivotPosition){
-            this.armAngle = armAngle;
-            this.pivotPosition = pivotPosition;
-        }
-
-        public double getArmAngle() {
-            return armAngle;
-        }
-        public double getPivotPosition(){
-            return pivotPosition;
-        }
-
-
-    }
 
 
 
