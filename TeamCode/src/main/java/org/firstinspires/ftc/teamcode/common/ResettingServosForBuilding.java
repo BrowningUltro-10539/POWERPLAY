@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.common;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.PwmControl;
@@ -9,6 +10,7 @@ import com.qualcomm.robotcore.hardware.ServoImplEx;
 
 @TeleOp
 @Config
+
 public class ResettingServosForBuilding extends OpMode {
     public Servo leftArm;
     public Servo rightArm;
@@ -33,45 +35,14 @@ public class ResettingServosForBuilding extends OpMode {
 
     @Override
     public void loop(){
-
-
-        if(gamepad1.a){
-            leftArm.setPosition(0.5);
-        }
-
-        if(gamepad1.b){
-            rightArm.setPosition(0.5);
-        }
-
-        if(gamepad1.x){
-            rotate.setPosition(0.5);
-        }
-
-        if(gamepad1.y){
-            claw.setPosition(0.5);
-        }
-
-        if(gamepad1.dpad_up){
-            setArm(0);
-        }
-
-        if(gamepad1.dpad_down){
-            setArm(0.5);
-        }
-
         if(gamepad1.dpad_left){
             setArm(ARM_POSITION);
-        }
-
-        if(gamepad1.dpad_right){
-            rotate.setPosition(ROTATE_POSITION);
         }
 
         if(gamepad1.right_bumper){
             claw.setPosition(CLAW_POSITION);
         }
-
-
+        
         telemetry.addLine("ALL SERVOS ARE SET TO POSITION 0.5 FOR INITIAL CHECK");
         telemetry.addLine("TO RUN SERVOS MANUAL: ");
         telemetry.addLine("A: (IS SUPPOSED TO BE) LEFT ARM");

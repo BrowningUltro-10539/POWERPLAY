@@ -8,27 +8,32 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.PwmControl;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.ServoImplEx;
 
 import java.util.List;
 
 @Config
 @TeleOp
-@Disabled
+
 public class DoubleLinearSlidePIDTune extends OpMode {
 
     public DcMotorEx liftMotorOne;
     public DcMotorEx liftMotorTwo;
     public PIDController liftController;
 
-    public Servo leftArm, rightArm;
+    public Servo claw, leftArm, rightArm;
+    public ServoImplEx rotate;
 
-    public static double slideP = 0.335;
+
+
+    public static double slideP = 0.0;
     public static double slideI = 0;
     public static double slideD = 0;
-    public static double slideKg = 0.09;
+    public static double slideKg = 0.26;
 
-    public static double SLIDE_TICKS_PER_INCH = 2 * Math.PI * 0.7017855748031 / 145.1;
+    public static double SLIDE_TICKS_PER_INCH = 2 * Math.PI * 1.38952756 / 145.1;
 
     public List<LynxModule> hubControllers;
 
@@ -45,8 +50,12 @@ public class DoubleLinearSlidePIDTune extends OpMode {
         liftMotorTwo.setDirection(DcMotorSimple.Direction.FORWARD);
         liftMotorOne.setDirection(DcMotorSimple.Direction.REVERSE);
 
-//        leftArm = hardwareMap.get(Servo.class, "portC0");
-//        rightArm = hardwareMap.get(Servo.class, "portC2");
+        leftArm = hardwareMap.get(Servo.class, "portC0");
+        rightArm = hardwareMap.get(Servo.class, "portC2");
+
+        claw = hardwareMap.get(Servo.class, "portC5");
+        rotate = hardwareMap.get(ServoImplEx.class, "portC4");
+        rotate.setPwmRange(new PwmControl.PwmRange(500, 2500));
 
         hubControllers = hardwareMap.getAll(LynxModule.class);
 
@@ -58,6 +67,10 @@ public class DoubleLinearSlidePIDTune extends OpMode {
     @Override
     public void loop(){
 
+
+        setArm(0);
+        claw.setPosition(0.5);
+        rotate.setPosition(0.26);
 
         liftController.setPID(slideP, slideI, slideD);
 

@@ -43,12 +43,12 @@ public class LiftSubsystem extends SubsystemBase {
     private double liftPosition;
 
 
-    public static double P = 0.335;
+    public static double P = 0.19;
     public static  double I = 0;
     public static double D = 0;
-    public static double Kg = 0.09;
+    public static double Kg = 0.28;
 
-    private final double SLIDE_TICKS_PER_INCH = 2 * Math.PI * 0.7017855748031 / 145.1;
+    private final double SLIDE_TICKS_PER_INCH = 2 * Math.PI * 1.38952756 / 145.1;
 
 
     private boolean isAuto = false;

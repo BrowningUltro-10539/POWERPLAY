@@ -19,7 +19,7 @@ public class AutoCycleCommandV5 extends SequentialCommandGroup {
             new InstantCommand(() -> robot.intake.update(IntakeSubsystem.ArmState.DEPOSIT)),
             new WaitCommand(75),
             new ParallelCommandGroup(
-                    new LiftPositionCommand(robot.lift, 22, 2),
+                    new LiftPositionCommand(robot.lift, 26, 2),
                     new TrajectorySequenceFollowerCommand(robot.driveSubsystem, toPole),
                     new InstantCommand(() -> robot.intake.update(IntakeSubsystem.RotateState.TRANSFER))
             ),

@@ -73,12 +73,7 @@ public class MecanumDriveSubsystem extends SubsystemBase {
                 new Pose2d(
                         input.getX(),
                         input.getY(),
-                        -rightX
-                ).plus(
-                        new Pose2d(
-                                clip(x*2, -0.9, 0.9), clip(y*2, -0.9, 0.9), 0)
-                        )
-                );
+                        -rightX));
     }
 
 

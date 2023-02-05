@@ -78,14 +78,19 @@ public class DriveOpMode extends CommandOpMode {
 
         if(gamepad1.y){
             schedule(new SequentialCommandGroup(
-                    new LiftPositionCommand(robot.lift,3.5, 2),
-                    new InstantCommand(() -> robot.intake.update(IntakeSubsystem.IntakeState.MEDIUM_POLE))));
+                    new InstantCommand(() -> robot.intake.update(IntakeSubsystem.IntakeState.MEDIUM_POLE)),
+                    new WaitCommand(100),
+                    new LiftPositionCommand(robot.lift,17, 2)
+                    ));
+
         }
 
         if(gamepad1.b){
             schedule(new SequentialCommandGroup(
-                    new LiftPositionCommand(robot.lift, 17, 2),
-                    new InstantCommand(() -> robot.intake.update(IntakeSubsystem.IntakeState.DECIDE))
+                    new InstantCommand(() -> robot.intake.update(IntakeSubsystem.IntakeState.DECIDE)),
+                    new WaitCommand(100),
+                    new LiftPositionCommand(robot.lift, 26, 2)
+
             ));
         }
 
@@ -102,18 +107,10 @@ public class DriveOpMode extends CommandOpMode {
 
 
 
-        if(gamepad1.right_bumper){
-            x = x * 0.5;
-            y = y * 0.5;
-            r = r * 0.5;
-        }
-
-        double finalY = y;
-        double finalX = x;
-        double finalR = r;
 
 
-        schedule(new MecanumDriveCommand(robot.driveSubsystem, () -> -finalY, () -> -finalX, () -> finalR));
+
+
 
 //        if(gamepad2.left_bumper){
 //            schedule(new InstantCommand(() -> robot.lift.update(LiftSubsystem.TurretState.STRAIGHT)));
@@ -140,7 +137,6 @@ public class DriveOpMode extends CommandOpMode {
 //        if(gamepad2.dpad_left){
 //            schedule(new InstantCommand(() -> robot.lift.update(LiftSubsystem.LiftState.MEDIUM)));
 //        }
-
 
 
 

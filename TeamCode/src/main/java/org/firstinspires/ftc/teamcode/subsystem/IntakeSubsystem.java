@@ -38,22 +38,22 @@ public class IntakeSubsystem extends SubsystemBase {
     private double voltage;
 
 
-    public static double CLAW_OPEN = 0.0;
-    public static double CLAW_CLOSE = 0.65;
+    public static double CLAW_OPEN = 0.5;
+    public static double CLAW_CLOSE = 0.9;
 
-    public static double ROTATE_INTAKE = 0.97;
-    public static double ROTATE_OUTTAKE = 0.37;
-    public static double ROTATE_MID = 0.25;
+    public static double ROTATE_INTAKE = 0.26;
+    public static double ROTATE_OUTTAKE = 0.9;
+    public static double ROTATE_MID = 0.55;
 
-    public static double ARM_DOWN = 0.97;
-    public static double ARM_UP = 0.51;
-    public static double ARM_DUNK = 0.46;
-    public static double LOW_POLE = 0.8;
+    public static double ARM_DOWN = 0;
+    public static double ARM_UP = 0.63;
+    public static double ARM_DUNK = 0.68;
+    public static double LOW_POLE = 0.32;
 
     private boolean isAuto;
 
     public enum IntakeState { INTAKE, DECIDE, OPEN_CLAW, CLOSE_CLAW, LOW_POLE, MEDIUM_POLE}
-    public enum ArmState { INTAKE, TRANSITION,  DEPOSIT, DUNK, LOW_POLE}
+    public enum ArmState { INTAKE, TRANSITION,  DEPOSIT, DUNK, LOW_POLE, AUTO_INIT}
     public enum ClawState { OPEN, CLOSED }
     public enum RotateState { INTAKE, MID, TRANSFER }
 
@@ -126,6 +126,8 @@ public class IntakeSubsystem extends SubsystemBase {
             case LOW_POLE:
                 setArm(LOW_POLE);
                 break;
+            case AUTO_INIT:
+                setArm(0.55);
         }
     }
 
