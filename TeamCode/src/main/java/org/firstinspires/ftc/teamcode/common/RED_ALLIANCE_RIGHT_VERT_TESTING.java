@@ -42,95 +42,53 @@ public class RED_ALLIANCE_RIGHT_VERT_TESTING extends LinearOpMode {
 
         //
 
-        Pose2d startPose = new Pose2d(36, -62, Math.toRadians(270));
-        robot.driveSubsystem.setPoseEstimate(startPose);
+        Pose2d startPose = new Pose2d(36, -62, Math.toRadians(270));        robot.driveSubsystem.setPoseEstimate(startPose);
 
         TrajectorySequence testing = robot.driveSubsystem.trajectorySequenceBuilder(startPose)
                 //Dropping off preload to pole
-                .lineTo(new Vector2d(36, -24))
-                .splineTo(new Vector2d(36, -8), Math.toRadians(145))
+                //Dropping off preload to pole
+                .lineTo(new Vector2d(36, -23))
+                .splineToSplineHeading(new Pose2d(35, -7, Math.toRadians(325)), Math.toRadians(120))
+                .back(1)
                 .build();
 
         TrajectorySequence toConeStackAfterPreload = robot.driveSubsystem.trajectorySequenceBuilder(testing.end())
-                .splineTo(new Vector2d(62.5, -11), Math.toRadians(0))
+                .splineTo(new Vector2d(47, -11), Math.toRadians(2))
+                .lineTo(new Vector2d(64, -7.75))
                 .build();
 
         TrajectorySequence toPoleAfterConeOnePickUp = robot.driveSubsystem.trajectorySequenceBuilder(toConeStackAfterPreload.end())
                 .setReversed(true)
-                //Going to pole
-                .splineTo(new Vector2d(36, -8), Math.toRadians(145))
+                //SCORE CONE ONE
+                .lineTo(new Vector2d(47, -11))
+                .splineToSplineHeading(new Pose2d(36, -7, Math.toRadians(315)), Math.toRadians(145))
+                .back(1)
                 .build();
 
         TrajectorySequence toConeTwoAfterConeOneDeposit = robot.driveSubsystem.trajectorySequenceBuilder(toPoleAfterConeOnePickUp.end())
                 .setReversed(false)
-                .waitSeconds(1.5)
-                //Going back to cone for Cycle 2
-                .splineTo(new Vector2d(62.5, -11), Math.toRadians(0))
+                //GO TO CONE TWO
+                .splineTo(new Vector2d(47, -11), Math.toRadians(0))
+                .lineTo(new Vector2d(65, -7.75))
                 .build();
 
-        TrajectorySequence toPoleAfterConeTwoPickUp = robot.driveSubsystem.trajectorySequenceBuilder(toConeTwoAfterConeOneDeposit.end())
+
+
+        TrajectorySequence toPoleAfterConeTwoPickUp = robot.driveSubsystem.trajectorySequenceBuilder(toConeStackAfterPreload.end())
                 .setReversed(true)
-                //Going to pole
-                .splineTo(new Vector2d(36, -8), Math.toRadians(145))
+                //SCORE CONE ONE
+                .lineTo(new Vector2d(47, -11))
+                .splineToSplineHeading(new Pose2d(38, -5, Math.toRadians(315)), Math.toRadians(145))
+
+
                 .build();
 
         TrajectorySequence toConeThreeAfterConeTwoDeposit = robot.driveSubsystem.trajectorySequenceBuilder(toPoleAfterConeTwoPickUp.end())
-                .setReversed(false)
-                .waitSeconds(1.5)
-                //Going back to cone for Cycle 2
-                .splineTo(new Vector2d(62.5, -11), Math.toRadians(0))
+                .setReversed(false)t
+                //GO TO CONE TWO
+                .splineTo(new Vector2d(47, -11), Math.toRadians(0))
+                .lineTo(new Vector2d(65, -7.75))
                 .build();
-
-
-        TrajectorySequence testing1 = robot.driveSubsystem.trajectorySequenceBuilder(startPose)
-                //Dropping off preload to pole
-                .lineTo(new Vector2d(36, -24))
-                .splineTo(new Vector2d(34, -7), Math.toRadians(136))
-                .waitSeconds(1.5)
-                // Going to cones
-                //CYCLE 1
-                .splineTo(new Vector2d(62.5, -11), Math.toRadians(0))
-                .waitSeconds(1.5)
-                .setReversed(true)
-                //Going to pole
-                .splineTo(new Vector2d(34, -7), Math.toRadians(136))
-                .setReversed(false)
-                .waitSeconds(1.5)
-                //Going back to cone for Cycle 2
-                .splineTo(new Vector2d(62.5, -11), Math.toRadians(0))
-                .waitSeconds(1.5)
-                .setReversed(true)
-                //Going to pole
-                .splineTo(new Vector2d(34,-7), Math.toRadians(136))
-                .setReversed(false)
-                .waitSeconds(1.5)
-                //Going back to cone for Cycle 3
-                .splineTo(new Vector2d(62.5, -11), Math.toRadians(0))
-                .waitSeconds(1.5)
-                .setReversed(true)
-                //Going to pole
-                .splineTo(new Vector2d(34, -7), Math.toRadians(137))
-                .setReversed(false)
-                .waitSeconds(1.5)
-                //Going back to cone for Cycle 4
-                .splineTo(new Vector2d(62.5, -11), Math.toRadians(0))
-                .waitSeconds(1.5)
-                .setReversed(true)
-                //Going to pole
-                .splineTo(new Vector2d(34, -7), Math.toRadians(137))
-                .setReversed(false)
-                .waitSeconds(1.5)
-                //Going back to cone for cycle 5
-                .splineTo(new Vector2d(62.5, -11), Math.toRadians(0))
-                .waitSeconds(1.5)
-                .setReversed(true)
-                //Going to pole
-                .splineTo(new Vector2d(34, -7), Math.toRadians(137))
-                .setReversed(false)
-                .waitSeconds(1.5)
-
-                .build();
-
 
 
         while(!isStarted()) {
@@ -165,33 +123,39 @@ public class RED_ALLIANCE_RIGHT_VERT_TESTING extends LinearOpMode {
         CommandScheduler.getInstance().schedule(new SequentialCommandGroup(
                 new ParallelCommandGroup(
                         new TrajectorySequenceFollowerCommand(robot.driveSubsystem, testing),
-                        new LiftPositionCommand(robot.lift, 26, 2),
-                        new InstantCommand(() -> robot.intake.update(IntakeSubsystem.ArmState.DEPOSIT))
+                        new LiftPositionCommand(robot.lift, 5, 2)
                         ),
 
-                new InstantCommand(() -> robot.intake.update(IntakeSubsystem.ArmState.DUNK)),
-                new WaitCommand(1000),
-                new InstantCommand(() -> robot.intake.update(IntakeSubsystem.ClawState.OPEN)),
-                new WaitCommand(500),
+                new InstantCommand(() -> robot.intake.update(IntakeSubsystem.ArmState.DEPOSIT)),
+                new LiftPositionCommand(robot.lift, 24, 2),
+                new WaitCommand(250),
+                new ParallelCommandGroup(
+                        new InstantCommand(() -> robot.intake.update(IntakeSubsystem.ClawState.OPEN)),
+                        new LiftPositionCommand(robot.lift, 20, 2)
+                ),
+                new WaitCommand(250),
                 new ParallelCommandGroup(
                         new TrajectorySequenceFollowerCommand(robot.driveSubsystem, toConeStackAfterPreload),
                         new SequentialCommandGroup(
                                 new WaitCommand(50),
-                                new LiftPositionCommand(robot.lift, 5.5, 2)
-                        ),
-                        new InstantCommand(() -> robot.intake.update(IntakeSubsystem.ArmState.INTAKE)),
-                        new InstantCommand(() -> robot.intake.update(IntakeSubsystem.RotateState.INTAKE))
+                                new LiftPositionCommand(robot.lift, 4.5, 2),
+                                new InstantCommand(() -> robot.intake.update(IntakeSubsystem.ArmState.INTAKE)),
+                                new InstantCommand(() -> robot.intake.update(IntakeSubsystem.RotateState.INTAKE))
+                        )
+
                 ),
-                new WaitCommand(250),
-                new AutoCycleCommandV5(robot, toPoleAfterConeOnePickUp, toConeTwoAfterConeOneDeposit, 4.8),
-                new WaitCommand(250),
-                new AutoCycleCommandV5(robot, toPoleAfterConeTwoPickUp, toConeThreeAfterConeTwoDeposit, 4),
-                new WaitCommand(250),
-                new AutoCycleCommandV5(robot, toPoleAfterConeTwoPickUp, toConeThreeAfterConeTwoDeposit, 3.5),
-                new WaitCommand(250),
-                new AutoCycleCommandV5(robot, toPoleAfterConeTwoPickUp, toConeThreeAfterConeTwoDeposit, 3.4),
-                new WaitCommand(250),
-                new AutoCycleCommandV5(robot, toPoleAfterConeTwoPickUp, toConeThreeAfterConeTwoDeposit, 3)
+                new WaitCommand(100),
+                new AutoCycleCommandV5(robot, toPoleAfterConeOnePickUp, toConeTwoAfterConeOneDeposit, 3.75),
+                new WaitCommand(100),
+                new AutoCycleCommandV5(robot, toPoleAfterConeTwoPickUp, toConeThreeAfterConeTwoDeposit, 3),
+                new WaitCommand(100),
+                new AutoCycleCommandV5(robot, toPoleAfterConeTwoPickUp, toConeThreeAfterConeTwoDeposit, 2.5)
+//                new WaitCommand(250),
+//                new AutoCycleCommandV5(robot, toPoleAfterConeTwoPickUp, toConeThreeAfterConeTwoDeposit, 3.5),
+//                new WaitCommand(250),
+//                new AutoCycleCommandV5(robot, toPoleAfterConeTwoPickUp, toConeThreeAfterConeTwoDeposit, 3.4),
+//                new WaitCommand(250),
+//                new AutoCycleCommandV5(robot, toPoleAfterConeTwoPickUp, toConeThreeAfterConeTwoDeposit, 3)
 
                 ));
 

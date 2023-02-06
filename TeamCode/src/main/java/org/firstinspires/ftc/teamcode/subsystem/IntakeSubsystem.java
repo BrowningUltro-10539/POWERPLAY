@@ -45,10 +45,11 @@ public class IntakeSubsystem extends SubsystemBase {
     public static double ROTATE_OUTTAKE = 0.9;
     public static double ROTATE_MID = 0.55;
 
-    public static double ARM_DOWN = 0;
-    public static double ARM_UP = 0.63;
+    public static double ARM_DOWN = 0.1;
+    public static double ARM_UP = 0.67;
     public static double ARM_DUNK = 0.68;
     public static double LOW_POLE = 0.32;
+
 
     private boolean isAuto;
 

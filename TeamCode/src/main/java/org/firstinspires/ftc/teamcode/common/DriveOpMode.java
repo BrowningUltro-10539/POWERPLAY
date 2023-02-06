@@ -73,7 +73,12 @@ public class DriveOpMode extends CommandOpMode {
         }
 
         if(gamepad1.x){
-            schedule(new InstantCommand(() -> robot.intake.update(IntakeSubsystem.IntakeState.LOW_POLE)));
+            schedule(new SequentialCommandGroup(
+                    new InstantCommand(() -> robot.intake.update(IntakeSubsystem.IntakeState.DECIDE)),
+                    new WaitCommand(100),
+                    new LiftPositionCommand(robot.lift, 4, 2)
+
+            ));
         }
 
         if(gamepad1.y){
@@ -89,7 +94,7 @@ public class DriveOpMode extends CommandOpMode {
             schedule(new SequentialCommandGroup(
                     new InstantCommand(() -> robot.intake.update(IntakeSubsystem.IntakeState.DECIDE)),
                     new WaitCommand(100),
-                    new LiftPositionCommand(robot.lift, 26, 2)
+                    new LiftPositionCommand(robot.lift, 25, 2)
 
             ));
         }
@@ -98,10 +103,17 @@ public class DriveOpMode extends CommandOpMode {
             schedule(new SequentialCommandGroup(
                         new InstantCommand(() -> robot.intake.update(IntakeSubsystem.IntakeState.OPEN_CLAW)),
                         new WaitCommand(500),
-                        new LiftPositionCommand(robot.lift, 0, 2),
-                        new InstantCommand(() -> robot.intake.update(IntakeSubsystem.IntakeState.INTAKE))
+                        new ParallelCommandGroup(
+                                new LiftPositionCommand(robot.lift, 0, 2),
+                                new InstantCommand(() -> robot.intake.update(IntakeSubsystem.IntakeState.INTAKE))
+                        )
+
 
             ));
+        }
+
+        if(gamepad1.dpad_down){
+            schedule(new InstantCommand(() -> robot.intake.update(IntakeSubsystem.IntakeState.LOW_POLE)));
         }
 
 

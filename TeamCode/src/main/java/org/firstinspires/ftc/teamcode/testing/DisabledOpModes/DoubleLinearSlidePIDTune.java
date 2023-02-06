@@ -31,7 +31,7 @@ public class DoubleLinearSlidePIDTune extends OpMode {
     public static double slideP = 0.0;
     public static double slideI = 0;
     public static double slideD = 0;
-    public static double slideKg = 0.26;
+    public static double slideKg = 0;
 
     public static double SLIDE_TICKS_PER_INCH = 2 * Math.PI * 1.38952756 / 145.1;
 
@@ -68,7 +68,7 @@ public class DoubleLinearSlidePIDTune extends OpMode {
     public void loop(){
 
 
-        setArm(0);
+        setArm(0.1);
         claw.setPosition(0.5);
         rotate.setPosition(0.26);
 

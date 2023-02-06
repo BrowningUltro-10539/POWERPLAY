@@ -19,17 +19,29 @@ public class AutoCycleCommandV5 extends SequentialCommandGroup {
             new InstantCommand(() -> robot.intake.update(IntakeSubsystem.ArmState.DEPOSIT)),
             new WaitCommand(75),
             new ParallelCommandGroup(
-                    new LiftPositionCommand(robot.lift, 26, 2),
+                    new LiftPositionCommand(robot.lift, 7, 2),
                     new TrajectorySequenceFollowerCommand(robot.driveSubsystem, toPole),
-                    new InstantCommand(() -> robot.intake.update(IntakeSubsystem.RotateState.TRANSFER))
+                    new SequentialCommandGroup(
+                            new WaitCommand(150),
+                            new InstantCommand(() -> robot.intake.update(IntakeSubsystem.RotateState.TRANSFER))
+                    )
+
             ),
-            new InstantCommand(() -> robot.intake.update(IntakeSubsystem.ArmState.DUNK)),
-            new InstantCommand(() -> robot.intake.update(IntakeSubsystem.ClawState.OPEN)),
+                new LiftPositionCommand(robot.lift, 25, 2),
+                new WaitCommand(500),
+                new ParallelCommandGroup(
+                        new InstantCommand(() -> robot.intake.update(IntakeSubsystem.ClawState.OPEN)),
+                        new LiftPositionCommand(robot.lift, 20, 2)
+                ),
             new WaitCommand(350),
             new ParallelCommandGroup(
-                    new InstantCommand(() -> robot.intake.update(IntakeSubsystem.RotateState.INTAKE)),
+                    new SequentialCommandGroup(
+                            new WaitCommand(50),
+                            new LiftPositionCommand(robot.lift, returnSlideHeight, 2)
+
+                    ),
                     new InstantCommand(() -> robot.intake.update(IntakeSubsystem.ArmState.INTAKE)),
-                    new LiftPositionCommand(robot.lift, returnSlideHeight, 2),
+                    new InstantCommand(() -> robot.intake.update(IntakeSubsystem.RotateState.INTAKE)),
                     new TrajectorySequenceFollowerCommand(robot.driveSubsystem, toReturn)
             )
         );
