@@ -15,7 +15,7 @@
 //import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 //import org.firstinspires.ftc.teamcode.Robot;
 //import org.firstinspires.ftc.teamcode.commands.Auto.TrajectoryFollowerCommand;
-//import org.firstinspires.ftc.teamcode.testing.vision.AprilTagDetectionPipeline;
+//import org.firstinspires.ftc.teamcode.vision.AprilTagDetectionPipeline;
 //import org.openftc.apriltag.AprilTagDetection;
 //import org.openftc.easyopencv.OpenCvCamera;
 //import org.openftc.easyopencv.OpenCvCameraFactory;

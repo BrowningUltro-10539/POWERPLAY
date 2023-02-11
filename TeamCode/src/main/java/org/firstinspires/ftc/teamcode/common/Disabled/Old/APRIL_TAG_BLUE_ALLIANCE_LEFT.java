@@ -15,7 +15,7 @@
 //import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 //import org.firstinspires.ftc.teamcode.Robot;
 //import org.firstinspires.ftc.teamcode.commands.Auto.TrajectoryFollowerCommand;
-//import org.firstinspires.ftc.teamcode.testing.vision.AprilTagDetectionPipeline;
+//import org.firstinspires.ftc.teamcode.vision.AprilTagDetectionPipeline;
 //import org.openftc.apriltag.AprilTagDetection;
 //import org.openftc.easyopencv.OpenCvCamera;
 //import org.openftc.easyopencv.OpenCvCameraFactory;
@@ -31,7 +31,7 @@
 //
 //    static final double FEET_PER_METER = 3.28084;
 //
-//    // Lens intrinsics
+//    // Lens intrinsicso
 //    // UNITS ARE PIXELS
 //    // NOTE: this calibration is for the C920 webcam at 800x448.
 //    // You will need to do your own calibration for other configurations!

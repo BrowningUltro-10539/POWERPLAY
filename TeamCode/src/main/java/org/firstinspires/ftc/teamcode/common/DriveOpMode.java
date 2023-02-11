@@ -17,6 +17,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.commands.LiftCommands.LiftPositionCommand;
 import org.firstinspires.ftc.teamcode.commands.MecanumDriveCommand;
+import org.firstinspires.ftc.teamcode.commands.NewLiftPositionCommand;
 import org.firstinspires.ftc.teamcode.subsystem.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystem.LiftSubsystem;
 
@@ -76,7 +77,7 @@ public class DriveOpMode extends CommandOpMode {
             schedule(new SequentialCommandGroup(
                     new InstantCommand(() -> robot.intake.update(IntakeSubsystem.IntakeState.DECIDE)),
                     new WaitCommand(100),
-                    new LiftPositionCommand(robot.lift, 4, 2)
+                    new NewLiftPositionCommand(robot.lift, 4, 50, 60, 2)
 
             ));
         }
@@ -85,7 +86,7 @@ public class DriveOpMode extends CommandOpMode {
             schedule(new SequentialCommandGroup(
                     new InstantCommand(() -> robot.intake.update(IntakeSubsystem.IntakeState.MEDIUM_POLE)),
                     new WaitCommand(100),
-                    new LiftPositionCommand(robot.lift,17, 2)
+                    new NewLiftPositionCommand(robot.lift,14, 50, 60, 2)
                     ));
 
         }
@@ -94,7 +95,7 @@ public class DriveOpMode extends CommandOpMode {
             schedule(new SequentialCommandGroup(
                     new InstantCommand(() -> robot.intake.update(IntakeSubsystem.IntakeState.DECIDE)),
                     new WaitCommand(100),
-                    new LiftPositionCommand(robot.lift, 25, 2)
+                    new NewLiftPositionCommand(robot.lift, 24, 50, 60, 2)
 
             ));
         }
@@ -104,7 +105,7 @@ public class DriveOpMode extends CommandOpMode {
                         new InstantCommand(() -> robot.intake.update(IntakeSubsystem.IntakeState.OPEN_CLAW)),
                         new WaitCommand(500),
                         new ParallelCommandGroup(
-                                new LiftPositionCommand(robot.lift, 0, 2),
+                                new NewLiftPositionCommand(robot.lift, 0, 40, 50, 2),
                                 new InstantCommand(() -> robot.intake.update(IntakeSubsystem.IntakeState.INTAKE))
                         )
 
@@ -112,10 +113,14 @@ public class DriveOpMode extends CommandOpMode {
             ));
         }
 
-        if(gamepad1.dpad_down){
-            schedule(new InstantCommand(() -> robot.intake.update(IntakeSubsystem.IntakeState.LOW_POLE)));
-        }
 
+
+
+        if(gamepad1.left_trigger > 0.25){
+            robot.lift.setSlideFactor(1);
+        } else if(gamepad1.right_trigger > 0.25){
+            robot.lift.setSlideFactor(-1);
+        }
 
 
 

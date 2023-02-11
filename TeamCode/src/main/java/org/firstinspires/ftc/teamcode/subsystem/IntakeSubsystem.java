@@ -28,7 +28,7 @@ public class IntakeSubsystem extends SubsystemBase {
     private final ServoImplEx rotate;
     private final Servo claw;
 
-    private final RevColorSensorV3 colorSensor;
+
 
     private final ElapsedTime timer;
     private final ElapsedTime voltageTimer;
@@ -42,12 +42,12 @@ public class IntakeSubsystem extends SubsystemBase {
     public static double CLAW_CLOSE = 0.9;
 
     public static double ROTATE_INTAKE = 0.26;
-    public static double ROTATE_OUTTAKE = 0.9;
-    public static double ROTATE_MID = 0.55;
+    public static double ROTATE_OUTTAKE = 0.89;
+    public static double ROTATE_MID = 0.89;
 
     public static double ARM_DOWN = 0.1;
     public static double ARM_UP = 0.67;
-    public static double ARM_DUNK = 0.68;
+    public static double ARM_DUNK = 0.7;
     public static double LOW_POLE = 0.32;
 
 
@@ -71,7 +71,7 @@ public class IntakeSubsystem extends SubsystemBase {
         this.leftArm = hardwareMap.get(Servo.class, "portC0");
         this.rightArm = hardwareMap.get(Servo.class, "portC2");
 
-        this.colorSensor = hardwareMap.get(RevColorSensorV3.class, "colorSensor");
+
 
         this.timer = new ElapsedTime();
         this.voltageTimer = new ElapsedTime();
@@ -128,7 +128,7 @@ public class IntakeSubsystem extends SubsystemBase {
                 setArm(LOW_POLE);
                 break;
             case AUTO_INIT:
-                setArm(0.55);
+                setArm(0.66);
         }
     }
 
@@ -200,9 +200,7 @@ public class IntakeSubsystem extends SubsystemBase {
     public void write(){}
 
     public void loop(){
-        if(colorSensor.getDistance(DistanceUnit.CM) < 1 && intakeState.equals(IntakeState.INTAKE)){
-            update(IntakeState.DECIDE);
-        }
+
     }
 
 

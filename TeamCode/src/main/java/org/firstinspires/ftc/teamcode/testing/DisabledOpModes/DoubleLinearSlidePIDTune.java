@@ -28,12 +28,12 @@ public class DoubleLinearSlidePIDTune extends OpMode {
 
 
 
-    public static double slideP = 0.0;
+    public static double slideP = 0.24;
     public static double slideI = 0;
     public static double slideD = 0;
-    public static double slideKg = 0;
+    public static double slideKg = 0.14;
 
-    public static double SLIDE_TICKS_PER_INCH = 2 * Math.PI * 1.38952756 / 145.1;
+    public static double SLIDE_TICKS_PER_INCH = 2 * Math.PI * 0.764445002 / 145.1;
 
     public List<LynxModule> hubControllers;
 
@@ -47,7 +47,7 @@ public class DoubleLinearSlidePIDTune extends OpMode {
         liftMotorOne = hardwareMap.get(DcMotorEx.class, "liftMotorOne");
         liftMotorTwo = hardwareMap.get(DcMotorEx.class, "liftMotorTwo");
 
-        liftMotorTwo.setDirection(DcMotorSimple.Direction.FORWARD);
+        liftMotorTwo.setDirection(DcMotorSimple.Direction.REVERSE);
         liftMotorOne.setDirection(DcMotorSimple.Direction.REVERSE);
 
         leftArm = hardwareMap.get(Servo.class, "portC0");

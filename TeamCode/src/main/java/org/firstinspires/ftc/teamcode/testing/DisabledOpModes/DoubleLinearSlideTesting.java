@@ -42,7 +42,7 @@ public class DoubleLinearSlideTesting extends OpMode {
         liftMotorOne = hardwareMap.get(DcMotorEx.class, "liftMotorOne");
         liftMotorTwo = hardwareMap.get(DcMotorEx.class, "liftMotorTwo");
 
-        liftMotorTwo.setDirection(DcMotorSimple.Direction.REVERSE);
+        liftMotorTwo.setDirection(DcMotorSimple.Direction.FORWARD);
         liftMotorOne.setDirection(DcMotorSimple.Direction.FORWARD);
 
 //        leftArm = hardwareMap.get(Servo.class, "portC0");

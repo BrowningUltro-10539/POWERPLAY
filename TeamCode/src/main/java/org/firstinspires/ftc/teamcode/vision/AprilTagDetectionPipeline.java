@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.testing.vision;
+package org.firstinspires.ftc.teamcode.vision;
 
 /*
  * Copyright (c) 2021 OpenFTC Team
@@ -45,6 +45,8 @@ public class AprilTagDetectionPipeline extends OpenCvPipeline
 
     private ArrayList<AprilTagDetection> detectionsUpdate = new ArrayList<>();
     private final Object detectionsUpdateSync = new Object();
+
+    private ParkingState parkingState = ParkingState.ONE;
 
     Mat cameraMatrix;
 
@@ -129,10 +131,19 @@ public class AprilTagDetectionPipeline extends OpenCvPipeline
             Pose pose = poseFromTrapezoid(detection.corners, cameraMatrix, tagsizeX, tagsizeY);
             drawAxisMarker(input, tagsizeY/2.0, 6, pose.rvec, pose.tvec, cameraMatrix);
             draw3dCubeMarker(input, tagsizeX, tagsizeX, tagsizeY, 5, pose.rvec, pose.tvec, cameraMatrix);
+
+            if(detection.id == 16){
+                parkingState = ParkingState.ONE;
+            } else if(detection.id == 14){
+                parkingState = ParkingState.TWO;
+            } else if(detection.id == 19){
+                parkingState = ParkingState.THREE;
+            }
         }
 
         return input;
     }
+
 
     public void setDecimation(float decimation)
     {
@@ -157,6 +168,8 @@ public class AprilTagDetectionPipeline extends OpenCvPipeline
             return ret;
         }
     }
+
+
 
     void constructMatrix()
     {

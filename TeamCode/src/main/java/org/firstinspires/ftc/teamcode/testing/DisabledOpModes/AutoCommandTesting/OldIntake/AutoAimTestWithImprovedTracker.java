@@ -24,8 +24,8 @@ package org.firstinspires.ftc.teamcode.testing.DisabledOpModes.AutoCommandTestin
 //
 //import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 //
-//import org.firstinspires.ftc.teamcode.testing.vision.ConeTracker;
-//import org.firstinspires.ftc.teamcode.testing.vision.ImprovedConeTracker;
+//import org.firstinspires.ftc.teamcode.vision.ConeTracker;
+//import org.firstinspires.ftc.teamcode.vision.ImprovedConeTracker;
 //import org.openftc.easyopencv.OpenCvCamera;
 //import org.openftc.easyopencv.OpenCvCameraFactory;
 //import org.openftc.easyopencv.OpenCvCameraRotation;

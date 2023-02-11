@@ -43,12 +43,12 @@ public class LiftSubsystem extends SubsystemBase {
     private double liftPosition;
 
 
-    public static double P = 0.19;
+    public static double P = 0.24;
     public static  double I = 0;
     public static double D = 0;
-    public static double Kg = 0.28;
+    public static double Kg = 0.14;
 
-    private final double SLIDE_TICKS_PER_INCH = 2 * Math.PI * 1.38952756 / 145.1;
+    private final double SLIDE_TICKS_PER_INCH = 2 * Math.PI * 0.764445002 / 145.1;
 
 
     private boolean isAuto = false;
@@ -77,7 +77,7 @@ public class LiftSubsystem extends SubsystemBase {
         this.lift2 = new MotorEx(hardwareMap, "liftMotorTwo");
 
         this.lift1.setInverted(true);
-        this.lift2.setInverted(false);
+        this.lift2.setInverted(true);
 
 
         this.timer = new ElapsedTime();
@@ -102,21 +102,27 @@ public class LiftSubsystem extends SubsystemBase {
     }
 
     public void loop() {
-        liftPower = liftController.calculate(liftPosition, liftTargetPosition) + Kg;
+//        liftPower = liftController.calculate(liftPosition, liftTargetPosition) + Kg;
+        if (voltageTimer.seconds() > 5) {
+            voltage = voltageSensor.getVoltage();
+            voltageTimer.reset();
+        }
 
+        currentState = profile.get(timer.time());
+        if (currentState.getV() != 0) {
+            liftTargetPosition = currentState.getX();
+        }
 
-//        if(voltageTimer.seconds() > 5){
-//            voltage = voltageSensor.getVoltage();
-//            voltageTimer.reset();
-//        }
-//
-//        currentState = profile.get(timer.time());
-//        if(currentState.getV() != 0){
-//            liftTargetPosition = currentState.getX();
-//        }
-//
-//        liftPower = (liftController.calculate(liftPosition, liftTargetPosition) + Kg) / (voltage * 14);
+        liftPower = liftController.calculate(liftPosition, liftTargetPosition) / voltage * 14;
 
+    }
+
+    public void setSlideFactor(double factor) {
+        double slideAddition = 1 * factor;
+        double newPosition = liftPosition + slideAddition;
+        if (currentState.getV() == 0) {
+            liftTargetPosition = newPosition;
+        }
 
     }
 

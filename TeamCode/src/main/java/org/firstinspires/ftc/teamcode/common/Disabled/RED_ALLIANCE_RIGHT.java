@@ -9,6 +9,7 @@ import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -22,6 +23,7 @@ import org.firstinspires.ftc.teamcode.subsystem.IntakeSubsystem;
 import org.openftc.easyopencv.OpenCvCamera;
 
 @Autonomous
+@Disabled
 public class RED_ALLIANCE_RIGHT extends LinearOpMode {
     private Robot robot;
     private ElapsedTime timer;
