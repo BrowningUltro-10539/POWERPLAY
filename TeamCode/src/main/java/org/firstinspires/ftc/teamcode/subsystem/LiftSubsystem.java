@@ -4,23 +4,12 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.profile.MotionProfile;
 import com.acmerobotics.roadrunner.profile.MotionProfileGenerator;
 import com.acmerobotics.roadrunner.profile.MotionState;
-import com.arcrobotics.ftclib.command.CommandScheduler;
-import com.arcrobotics.ftclib.command.InstantCommand;
-import com.arcrobotics.ftclib.command.ParallelCommandGroup;
-import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.SubsystemBase;
-import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.controller.PIDController;
-import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
-import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.teamcode.commands.LiftCommands.LiftPositionCommand;
 
 @Config
 public class LiftSubsystem extends SubsystemBase {
@@ -28,7 +17,7 @@ public class LiftSubsystem extends SubsystemBase {
 
     public final MotorEx lift1;
     public final MotorEx lift2;
-
+    public final MotorEx liftEncoder;
 
     private MotionProfile profile;
     public MotionState currentState;
@@ -43,48 +32,37 @@ public class LiftSubsystem extends SubsystemBase {
     private double liftPosition;
 
 
-    public static double P = 0.24;
+    public static double P = 0.26;
     public static  double I = 0;
     public static double D = 0;
-    public static double Kg = 0.14;
+    public static double kG = 0.21;
 
     private final double SLIDE_TICKS_PER_INCH = 2 * Math.PI * 0.764445002 / 145.1;
-
 
     private boolean isAuto = false;
 
     public double liftPower = 0.0;
     public double liftTargetPosition = 0.0;
 
-
     public int offset = 0;
-
-    public LiftState liftState = LiftState.READY_TO_INTAKE;
-
-
-    public enum LiftState{
-        READY_TO_INTAKE,
-        HIGH_POLE,
-        MEDIUM_POLE,
-        LOW_POLE
-
-    }
-
 
 
     public LiftSubsystem(HardwareMap hardwareMap, boolean isAuto){
         this.lift1 = new MotorEx(hardwareMap, "liftMotorOne");
         this.lift2 = new MotorEx(hardwareMap, "liftMotorTwo");
+        this.liftEncoder = new MotorEx(hardwareMap, "LB");
 
-        this.lift1.setInverted(true);
+        this.lift1.setInverted(false);
         this.lift2.setInverted(true);
+        this.liftEncoder.setInverted(false);
+
 
 
         this.timer = new ElapsedTime();
         timer.reset();
 
         if(isAuto){
-            lift1.encoder.reset();
+            liftEncoder.encoder.reset();
         }
 
         this.profile = MotionProfileGenerator.generateSimpleMotionProfile(new MotionState(1, 0), new MotionState(0, 0), 30, 25);
@@ -102,7 +80,6 @@ public class LiftSubsystem extends SubsystemBase {
     }
 
     public void loop() {
-//        liftPower = liftController.calculate(liftPosition, liftTargetPosition) + Kg;
         if (voltageTimer.seconds() > 5) {
             voltage = voltageSensor.getVoltage();
             voltageTimer.reset();
@@ -113,7 +90,7 @@ public class LiftSubsystem extends SubsystemBase {
             liftTargetPosition = currentState.getX();
         }
 
-        liftPower = liftController.calculate(liftPosition, liftTargetPosition) / voltage * 14;
+        liftPower = (liftController.calculate(liftPosition, liftTargetPosition) + kG)/ voltage * 14;
 
     }
 
@@ -125,10 +102,7 @@ public class LiftSubsystem extends SubsystemBase {
         }
 
     }
-
-
-
-    public void read(){ liftPosition = lift1.encoder.getPosition() * SLIDE_TICKS_PER_INCH; }
+    public void read(){ liftPosition = liftEncoder.encoder.getPosition() * SLIDE_TICKS_PER_INCH; }
 
     public void write(){
         lift1.set(liftPower);
@@ -144,9 +118,6 @@ public class LiftSubsystem extends SubsystemBase {
     public void resetTimer() {
         timer.reset();
     }
-
-
-    public LiftState getLiftState(){ return liftState; }
 
     public void newProfile(double targetPos, double max_v, double max_a) {
         profile = MotionProfileGenerator.generateSimpleMotionProfile(new MotionState(getLiftPos(), 0), new MotionState(targetPos, 0), max_v, max_a);

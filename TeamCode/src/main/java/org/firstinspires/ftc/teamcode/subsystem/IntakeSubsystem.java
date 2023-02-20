@@ -1,24 +1,19 @@
 package org.firstinspires.ftc.teamcode.subsystem;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.command.WaitCommand;
-import com.arcrobotics.ftclib.controller.PIDController;
-import com.qualcomm.hardware.rev.RevColorSensorV3;
+
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PwmControl;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
-
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @Config
 public class IntakeSubsystem extends SubsystemBase {
@@ -38,17 +33,17 @@ public class IntakeSubsystem extends SubsystemBase {
     private double voltage;
 
 
-    public static double CLAW_OPEN = 0.5;
-    public static double CLAW_CLOSE = 0.9;
+    public static double CLAW_OPEN = 1;
+    public static double CLAW_CLOSE = 0.5;
 
-    public static double ROTATE_INTAKE = 0.26;
-    public static double ROTATE_OUTTAKE = 0.89;
-    public static double ROTATE_MID = 0.89;
+    public static double ROTATE_INTAKE = 1;
+    public static double ROTATE_OUTTAKE = 0.0;
+    public static double ROTATE_MID = 0.0;
 
-    public static double ARM_DOWN = 0.1;
-    public static double ARM_UP = 0.67;
-    public static double ARM_DUNK = 0.7;
-    public static double LOW_POLE = 0.32;
+    public static double ARM_DOWN = 0.09;
+    public static double ARM_UP = 0.6;
+    public static double ARM_DUNK = 0.58;
+    public static double LOW_POLE = 0.0;
 
 
     private boolean isAuto;
@@ -198,16 +193,10 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public void read(){}
     public void write(){}
-
-    public void loop(){
-
-    }
+    public void loop(){}
 
 
-
-    public void setRotate(double pos){
-        rotate.setPosition(pos);
-    }
+    public void setRotate(double pos){ rotate.setPosition(pos); }
     public void setClaw(double pos){
         claw.setPosition(pos);
     }

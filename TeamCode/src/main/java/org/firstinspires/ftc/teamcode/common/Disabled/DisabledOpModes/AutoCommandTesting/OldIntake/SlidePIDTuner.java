@@ -1,47 +1,48 @@
-//package org.firstinspires.ftc.teamcode.common;
+package org.firstinspires.ftc.teamcode.common.Disabled.DisabledOpModes.AutoCommandTesting.OldIntake;//package org.firstinspires.ftc.teamcode.common.Disabled.DisabledOpModes.AutoCommandTesting;
+//
+//
 //
 //import com.acmerobotics.dashboard.FtcDashboard;
-//import com.acmerobotics.dashboard.config.Config;
 //import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 //import com.arcrobotics.ftclib.command.CommandOpMode;
 //import com.arcrobotics.ftclib.command.CommandScheduler;
 //import com.arcrobotics.ftclib.command.InstantCommand;
-//import com.arcrobotics.ftclib.gamepad.GamepadEx;
+//import com.arcrobotics.ftclib.command.ParallelCommandGroup;
+//import com.arcrobotics.ftclib.command.SequentialCommandGroup;
+//import com.arcrobotics.ftclib.command.WaitCommand;
+//import com.outoftheboxrobotics.photoncore.PhotonCore;
 //import com.qualcomm.hardware.lynx.LynxModule;
 //import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 //import com.qualcomm.robotcore.util.ElapsedTime;
 //
 //import org.firstinspires.ftc.teamcode.Robot;
-//import org.firstinspires.ftc.teamcode.commands.Old.OldCommandStuff.NewBot.AutoInitCommand;
-//import org.firstinspires.ftc.teamcode.commands.MecanumDriveCommand;
+//import org.firstinspires.ftc.teamcode.commands.Auto.AutoCycleCommand;
+//import org.firstinspires.ftc.teamcode.commands.Auto.AutoCycleV2Command;
+//import org.firstinspires.ftc.teamcode.commands.Old.OldCommandStuff.Intake.AutoStackCommand;
+//import org.firstinspires.ftc.teamcode.commands.Old.OldCommandStuff.Outtake.AutoDepositCommand;
+//import org.firstinspires.ftc.teamcode.commands.Old.LiftPositionCommand;
 //import org.firstinspires.ftc.teamcode.subsystem.IntakeSubsystem;
 //import org.firstinspires.ftc.teamcode.subsystem.LiftSubsystem;
 //
 //@TeleOp
-//@Config
-//public class AutoCommandSequenceTesting extends CommandOpMode {
+//public class SlidePIDTuner extends CommandOpMode {
 //    private Robot robot;
 //    private ElapsedTime timer;
 //    private double loopTime = 0;
-//
-//    private GamepadEx driver2Ex;
 //
 //
 //    @Override
 //    public void initialize(){
 //        CommandScheduler.getInstance().reset();
 //
-//        robot = new Robot(hardwareMap, false);
+//        robot = new Robot(hardwareMap, true);
 //        robot.reset();
 //
 //        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 //
-//
 //        for(LynxModule module : robot.getControllers()){
 //            module.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
 //        }
-//
-//
 //
 //    }
 //
@@ -55,50 +56,24 @@
 //
 //        robot.read();
 //
-//        if(gamepad1.dpad_left){
-//            schedule(new InstantCommand(() -> robot.intake.update(IntakeSubsystem.ClawState.OPEN)));
-//        }
+//       if(gamepad1.a){
+//           schedule(new LiftPositionCommand(robot.lift, 0, 10));
+//       }
 //
-//        if(gamepad1.dpad_right){
-//            schedule(new InstantCommand(() -> robot.intake.update(IntakeSubsystem.ClawState.CLOSED)));
-//        }
+//       if(gamepad1.b){
+//           schedule(new LiftPositionCommand(robot.lift, 500, 10));
+//       }
 //
-//
-//
-//        if(gamepad1.a){
-//            schedule(new AutoInitCommand(robot));
-//        }
+//       if(gamepad1.x){
+//           schedule(new LiftPositionCommand(robot.lift, 1200, 10));
+//       }
 //
 //
 //
-////        if(gamepad2.left_bumper){
-////            schedule(new InstantCommand(() -> robot.lift.update(LiftSubsystem.TurretState.STRAIGHT)));
-////        }
-////
-////
-////        if(gamepad2.a){
-////            schedule(new InstantCommand(() -> robot.lift.update(LiftSubsystem.TurretState.RIGHT_POLE)));
-////        }
-////
-////        if(gamepad2.b){
-////            schedule(new InstantCommand(() -> robot.lift.update(LiftSubsystem.TurretState.LEFT_POLE)));
-////        }
-////
-////
-////        if(gamepad2.dpad_up){
-////            schedule(new InstantCommand(() -> robot.lift.update(LiftSubsystem.LiftState.HIGH_POLE_EXTEND)));
-////        }
-////
-////        if(gamepad2.dpad_down){
-////            schedule(new LiftPositionCommand(robot.lift, 0, 2));
-////        }
-////
-////        if(gamepad2.dpad_left){
-////            schedule(new InstantCommand(() -> robot.lift.update(LiftSubsystem.LiftState.MEDIUM)));
-////        }
+//       if(gamepad1.y){
+//           schedule(new LiftPositionCommand(robot.lift, 1500, 10));
+//       }
 //
-//
-//        schedule(new MecanumDriveCommand(robot.driveSubsystem, () -> -gamepad1.left_stick_y, () -> -gamepad1.left_stick_x, () -> gamepad1.right_stick_x));
 //
 //
 //        robot.intake.setLiftTurretState(robot.lift.turretState);
@@ -108,12 +83,17 @@
 //        robot.lift.loop();
 //
 //
+//
 //        CommandScheduler.getInstance().run();
 //
 //        robot.write();
 //
 //        double loop = System.nanoTime();
 //        telemetry.addData("hz ", 1000000000 / (loop - loopTime));
+//        telemetry.addData("Lift Pos", robot.lift.getLiftPos());
+//        telemetry.addData("Lift Target Pos", robot.lift.liftTargetPosition);
+//        telemetry.addData("Lift Turret Power", robot.lift.liftPower);
+//
 //        loopTime = loop;
 //        telemetry.update();
 //
@@ -130,3 +110,4 @@
 //
 //
 //}
+//
