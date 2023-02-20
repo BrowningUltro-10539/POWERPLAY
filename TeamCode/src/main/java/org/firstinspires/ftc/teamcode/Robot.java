@@ -5,7 +5,7 @@ import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.rr.drive.SampleMecanumDrive;
-import org.firstinspires.ftc.teamcode.rr.drive.StandardTrackingWheelLocalizer;
+import org.firstinspires.ftc.teamcode.rr.drive.localizers.StandardTrackingWheelLocalizer;
 import org.firstinspires.ftc.teamcode.subsystem.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystem.LiftSubsystem;
 import org.firstinspires.ftc.teamcode.subsystem.MecanumDriveSubsystem;

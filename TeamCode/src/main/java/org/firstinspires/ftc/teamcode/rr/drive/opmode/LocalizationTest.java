@@ -16,17 +16,14 @@ import org.firstinspires.ftc.teamcode.rr.drive.SampleMecanumDrive;
  * encoder localizer heading may be significantly off if the track width has not been tuned).
  */
 @TeleOp(group = "drive")
-
 public class LocalizationTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
-        Pose2d startPose = new Pose2d(36, -62, Math.toRadians(270));
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        drive.setPoseEstimate(startPose);
 
         waitForStart();
 

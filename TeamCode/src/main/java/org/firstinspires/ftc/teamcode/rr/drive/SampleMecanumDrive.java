@@ -28,6 +28,8 @@ import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.teamcode.rr.drive.localizers.KalmanTwoWheelLocalizer;
+import org.firstinspires.ftc.teamcode.rr.drive.localizers.TwoWheelTrackingLocalizer;
 import org.firstinspires.ftc.teamcode.rr.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.rr.trajectorysequence.TrajectorySequenceBuilder;
 import org.firstinspires.ftc.teamcode.rr.trajectorysequence.TrajectorySequenceRunner;
@@ -134,6 +136,8 @@ public class SampleMecanumDrive extends MecanumDrive {
         rightRear.setDirection(DcMotorSimple.Direction.REVERSE);
         // TODO: if desired, use setLocalizer() to change the localization method
         // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
+
+        setLocalizer(new KalmanTwoWheelLocalizer(new TwoWheelTrackingLocalizer(hardwareMap, this)));
 
         trajectorySequenceRunner = new TrajectorySequenceRunner(follower, HEADING_PID);
     }
