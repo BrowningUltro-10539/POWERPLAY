@@ -8,7 +8,7 @@ import com.arcrobotics.ftclib.command.WaitCommand;
 
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.commands.Old.LiftPositionCommand;
-import org.firstinspires.ftc.teamcode.subsystem.IntakeSubsystem;
+import org.firstinspires.ftc.teamcode.commands.subsystem.IntakeSubsystem;
 
 public class AutoDepositAndRetract extends SequentialCommandGroup {
     public AutoDepositAndRetract(Robot robot, double returnSlidePos){

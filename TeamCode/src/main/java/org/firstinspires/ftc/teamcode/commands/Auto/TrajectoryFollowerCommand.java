@@ -5,7 +5,7 @@ package org.firstinspires.ftc.teamcode.commands.Auto;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.arcrobotics.ftclib.command.CommandBase;
 
-import org.firstinspires.ftc.teamcode.subsystem.MecanumDriveSubsystem;
+import org.firstinspires.ftc.teamcode.commands.subsystem.MecanumDriveSubsystem;
 
 public class TrajectoryFollowerCommand extends CommandBase {
 

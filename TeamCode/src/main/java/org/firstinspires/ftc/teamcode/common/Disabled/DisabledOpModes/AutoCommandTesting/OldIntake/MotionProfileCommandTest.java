@@ -12,7 +12,7 @@ package org.firstinspires.ftc.teamcode.common.Disabled.DisabledOpModes.AutoComma
 //
 //import org.firstinspires.ftc.teamcode.Robot;
 //import org.firstinspires.ftc.teamcode.commands.Old.OldCommandStuff.IntakeCommands.IntakePositionCommand;
-//import org.firstinspires.ftc.teamcode.subsystem.IntakeSubsystem;
+//import org.firstinspires.ftc.teamcode.commands.subsystem.IntakeSubsystem;
 //
 //@TeleOp
 //public class MotionProfileCommandTest extends CommandOpMode {

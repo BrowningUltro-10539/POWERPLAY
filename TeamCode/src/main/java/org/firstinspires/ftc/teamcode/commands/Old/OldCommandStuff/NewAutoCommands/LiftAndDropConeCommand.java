@@ -8,7 +8,7 @@
 //
 //import org.firstinspires.ftc.teamcode.Robot;
 //import org.firstinspires.ftc.teamcode.commands.Old.LiftPositionCommand;
-//import org.firstinspires.ftc.teamcode.subsystem.LiftSubsystem;
+//import org.firstinspires.ftc.teamcode.commands.subsystem.LiftSubsystem;
 //
 //public class LiftAndDropConeCommand extends SequentialCommandGroup {
 //    public LiftAndDropConeCommand(Robot robot){

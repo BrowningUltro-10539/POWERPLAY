@@ -4,7 +4,7 @@ package org.firstinspires.ftc.teamcode.commands;
 import com.arcrobotics.ftclib.command.CommandBase;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.subsystem.LiftSubsystem;
+import org.firstinspires.ftc.teamcode.commands.subsystem.LiftSubsystem;
 
 public class NewLiftPositionCommand extends CommandBase {
     private final double position;

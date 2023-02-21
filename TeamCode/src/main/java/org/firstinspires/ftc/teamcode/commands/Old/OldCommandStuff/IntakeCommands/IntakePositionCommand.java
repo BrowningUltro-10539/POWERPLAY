@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.commands.Old.OldCommandStuff.IntakeComman
 //import com.arcrobotics.ftclib.command.CommandBase;
 //import com.qualcomm.robotcore.util.ElapsedTime;
 //
-//import org.firstinspires.ftc.teamcode.subsystem.IntakeSubsystem;
+//import org.firstinspires.ftc.teamcode.commands.subsystem.IntakeSubsystem;
 //
 //public class IntakePositionCommand extends CommandBase {
 //    private final double position;

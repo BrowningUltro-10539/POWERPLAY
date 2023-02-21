@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.commands.Auto.TrajectorySequenceFollowerCommand;
 import org.firstinspires.ftc.teamcode.commands.NewLiftPositionCommand;
 import org.firstinspires.ftc.teamcode.rr.trajectorysequence.TrajectorySequence;
-import org.firstinspires.ftc.teamcode.subsystem.IntakeSubsystem;
+import org.firstinspires.ftc.teamcode.commands.subsystem.IntakeSubsystem;
 
 public class AutoCycleCommandV5 extends SequentialCommandGroup {
     public AutoCycleCommandV5(Robot robot, TrajectorySequence toPole, TrajectorySequence toReturn, double returnSlideHeight){

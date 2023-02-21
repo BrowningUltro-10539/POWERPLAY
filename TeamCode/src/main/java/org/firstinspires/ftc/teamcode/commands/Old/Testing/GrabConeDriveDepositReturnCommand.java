@@ -9,7 +9,7 @@ import com.arcrobotics.ftclib.command.WaitCommand;
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.commands.Auto.TrajectoryFollowerCommand;
 import org.firstinspires.ftc.teamcode.commands.Old.LiftPositionCommand;
-import org.firstinspires.ftc.teamcode.subsystem.IntakeSubsystem;
+import org.firstinspires.ftc.teamcode.commands.subsystem.IntakeSubsystem;
 
 public class GrabConeDriveDepositReturnCommand extends SequentialCommandGroup {
     public GrabConeDriveDepositReturnCommand(Robot robot, Trajectory toPole, Trajectory toReturn, double returnSlideHeight){

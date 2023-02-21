@@ -5,7 +5,7 @@ package org.firstinspires.ftc.teamcode.commands.Old.OldCommandStuff.IntakeComman
 //import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 //
 //import org.firstinspires.ftc.teamcode.Robot;
-//import org.firstinspires.ftc.teamcode.subsystem.IntakeSubsystem;
+//import org.firstinspires.ftc.teamcode.commands.subsystem.IntakeSubsystem;
 //
 //public class ServoWithMotionProfileCommand extends SequentialCommandGroup {
 //    public ServoWithMotionProfileCommand(Robot robot){

@@ -20,7 +20,7 @@ import org.firstinspires.ftc.teamcode.commands.Auto.TrajectorySequenceFollowerCo
 import org.firstinspires.ftc.teamcode.commands.Old.AutoCycleCommandV5;
 import org.firstinspires.ftc.teamcode.commands.Old.LiftPositionCommand;
 import org.firstinspires.ftc.teamcode.rr.trajectorysequence.TrajectorySequence;
-import org.firstinspires.ftc.teamcode.subsystem.IntakeSubsystem;
+import org.firstinspires.ftc.teamcode.commands.subsystem.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.vision.AprilTagDetectionPipeline;
 import org.firstinspires.ftc.teamcode.vision.ParkingState;
 import org.openftc.apriltag.AprilTagDetection;

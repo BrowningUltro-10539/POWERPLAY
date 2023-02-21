@@ -14,8 +14,8 @@
 //import org.firstinspires.ftc.teamcode.Robot;
 //import org.firstinspires.ftc.teamcode.commands.Old.OldCommandStuff.NewBot.AutoInitCommand;
 //import org.firstinspires.ftc.teamcode.commands.MecanumDriveCommand;
-//import org.firstinspires.ftc.teamcode.subsystem.IntakeSubsystem;
-//import org.firstinspires.ftc.teamcode.subsystem.LiftSubsystem;
+//import org.firstinspires.ftc.teamcode.commands.subsystem.IntakeSubsystem;
+//import org.firstinspires.ftc.teamcode.commands.subsystem.LiftSubsystem;
 //
 //@TeleOp
 //@Config

@@ -21,8 +21,8 @@ package org.firstinspires.ftc.teamcode.common.Disabled.DisabledOpModes.AutoComma
 //import org.firstinspires.ftc.teamcode.commands.Old.OldCommandStuff.Intake.AutoStackCommand;
 //import org.firstinspires.ftc.teamcode.commands.Old.OldCommandStuff.Outtake.AutoDepositCommand;
 //import org.firstinspires.ftc.teamcode.commands.Old.LiftPositionCommand;
-//import org.firstinspires.ftc.teamcode.subsystem.IntakeSubsystem;
-//import org.firstinspires.ftc.teamcode.subsystem.LiftSubsystem;
+//import org.firstinspires.ftc.teamcode.commands.subsystem.IntakeSubsystem;
+//import org.firstinspires.ftc.teamcode.commands.subsystem.LiftSubsystem;
 //
 //@TeleOp
 //public class SlidePIDTuner extends CommandOpMode {

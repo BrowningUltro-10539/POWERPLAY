@@ -6,15 +6,15 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.rr.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.rr.drive.localizers.StandardTrackingWheelLocalizer;
-import org.firstinspires.ftc.teamcode.subsystem.IntakeSubsystem;
-import org.firstinspires.ftc.teamcode.subsystem.LiftSubsystem;
-import org.firstinspires.ftc.teamcode.subsystem.MecanumDriveSubsystem;
+import org.firstinspires.ftc.teamcode.commands.subsystem.IntakeSubsystem;
+import org.firstinspires.ftc.teamcode.commands.subsystem.LiftSubsystem;
+import org.firstinspires.ftc.teamcode.commands.subsystem.MecanumDriveSubsystem;
 
 import java.util.List;
 
 public class Robot {
 
-    public SampleMecanumDrive drivetrain;
+
     public StandardTrackingWheelLocalizer localizer;
     public MecanumDriveSubsystem driveSubsystem;
 

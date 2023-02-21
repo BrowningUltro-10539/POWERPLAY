@@ -13,7 +13,7 @@ package org.firstinspires.ftc.teamcode.common.Disabled.DisabledOpModes.AutoComma
 //import org.firstinspires.ftc.teamcode.Robot;
 //import org.firstinspires.ftc.teamcode.commands.Old.OldCommandStuff.IntakeCommands.IntakeAndDepositCommand;
 //import org.firstinspires.ftc.teamcode.commands.Old.OldCommandStuff.IntakeCommands.IntakeFiveStackIntakeAndDepositCommand;
-//import org.firstinspires.ftc.teamcode.subsystem.IntakeSubsystem;
+//import org.firstinspires.ftc.teamcode.commands.subsystem.IntakeSubsystem;
 //
 //@TeleOp
 //public class FiveStackServoPositionTesting extends CommandOpMode {

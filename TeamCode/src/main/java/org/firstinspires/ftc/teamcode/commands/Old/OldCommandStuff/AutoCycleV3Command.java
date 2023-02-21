@@ -8,8 +8,8 @@
 //
 //import org.firstinspires.ftc.teamcode.Robot;
 //import org.firstinspires.ftc.teamcode.commands.Old.LiftPositionCommand;
-//import org.firstinspires.ftc.teamcode.subsystem.IntakeSubsystem;
-//import org.firstinspires.ftc.teamcode.subsystem.LiftSubsystem;
+//import org.firstinspires.ftc.teamcode.commands.subsystem.IntakeSubsystem;
+//import org.firstinspires.ftc.teamcode.commands.subsystem.LiftSubsystem;
 //
 //public class AutoCycleV3Command extends SequentialCommandGroup {
 //    public AutoCycleV3Command(Robot robot, double armPos){

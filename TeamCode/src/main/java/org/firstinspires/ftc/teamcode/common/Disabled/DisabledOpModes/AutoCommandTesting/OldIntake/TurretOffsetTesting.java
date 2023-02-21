@@ -12,8 +12,8 @@ package org.firstinspires.ftc.teamcode.common.Disabled.DisabledOpModes.AutoComma
 //import com.qualcomm.robotcore.util.ElapsedTime;
 //
 //import org.firstinspires.ftc.teamcode.Robot;
-//import org.firstinspires.ftc.teamcode.subsystem.IntakeSubsystem;
-//import org.firstinspires.ftc.teamcode.subsystem.LiftSubsystem;
+//import org.firstinspires.ftc.teamcode.commands.subsystem.IntakeSubsystem;
+//import org.firstinspires.ftc.teamcode.commands.subsystem.LiftSubsystem;
 //
 //
 //@TeleOp

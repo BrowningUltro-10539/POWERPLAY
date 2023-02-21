@@ -19,7 +19,7 @@ import org.firstinspires.ftc.teamcode.commands.Auto.TrajectoryFollowerCommand;
 import org.firstinspires.ftc.teamcode.commands.Old.Testing.AutoDepositAndRetract;
 import org.firstinspires.ftc.teamcode.commands.Old.Testing.GrabConeDriveDepositReturnCommand;
 import org.firstinspires.ftc.teamcode.rr.trajectorysequence.TrajectorySequence;
-import org.firstinspires.ftc.teamcode.subsystem.IntakeSubsystem;
+import org.firstinspires.ftc.teamcode.commands.subsystem.IntakeSubsystem;
 import org.openftc.easyopencv.OpenCvCamera;
 
 @Autonomous

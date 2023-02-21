@@ -17,8 +17,8 @@ package org.firstinspires.ftc.teamcode.common.Disabled.DisabledOpModes.AutoComma
 //import org.firstinspires.ftc.teamcode.commands.Old.OldCommandStuff.IntakeCommands.ColorSensorTestCommand;
 //import org.firstinspires.ftc.teamcode.commands.Old.OldCommandStuff.IntakeCommands.DepositWColorSensorCommandTest;
 //import org.firstinspires.ftc.teamcode.commands.Old.OldCommandStuff.IntakeCommands.IntakeAndDepositCommand;
-//import org.firstinspires.ftc.teamcode.subsystem.IntakeSubsystem;
-//import org.firstinspires.ftc.teamcode.subsystem.LiftSubsystem;
+//import org.firstinspires.ftc.teamcode.commands.subsystem.IntakeSubsystem;
+//import org.firstinspires.ftc.teamcode.commands.subsystem.LiftSubsystem;
 //
 //
 //import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
