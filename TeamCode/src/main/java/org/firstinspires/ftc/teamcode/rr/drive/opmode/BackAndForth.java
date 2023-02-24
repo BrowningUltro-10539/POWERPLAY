@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.rr.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.rr.drive.SampleMecanumDriveWithNavX;
 
 /*
  * Op mode for preliminary tuning of the follower PID coefficients (located in the drive base
@@ -35,11 +36,8 @@ public class BackAndForth extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        SampleMecanumDriveWithNavX drive = new SampleMecanumDriveWithNavX(hardwareMap);
 
-        PhotonCore.CONTROL_HUB.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
-        PhotonCore.EXPANSION_HUB.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
-        PhotonCore.enable();
 
         Trajectory trajectoryForward = drive.trajectoryBuilder(new Pose2d())
                 .forward(DISTANCE)
@@ -55,7 +53,7 @@ public class BackAndForth extends LinearOpMode {
             drive.followTrajectory(trajectoryForward);
             drive.followTrajectory(trajectoryBackward);
 
-            PhotonCore.CONTROL_HUB.clearBulkCache();
+
         }
     }
 }

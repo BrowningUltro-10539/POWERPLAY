@@ -20,7 +20,7 @@ public class TurnCommand extends CommandBase {
 
     @Override
     public void initialize() {
-        drive.turn(Math.toRadians(22));
+        drive.turn(Math.toRadians(angle));
     }
 
     @Override

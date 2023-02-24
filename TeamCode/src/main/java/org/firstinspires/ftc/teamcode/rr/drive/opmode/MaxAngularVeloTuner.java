@@ -47,9 +47,7 @@ public class MaxAngularVeloTuner extends LinearOpMode {
         telemetry.addLine("Press start when ready.");
         telemetry.update();
 
-        PhotonCore.CONTROL_HUB.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
-        PhotonCore.EXPANSION_HUB.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
-        PhotonCore.enable();
+
 
         waitForStart();
 
@@ -75,7 +73,7 @@ public class MaxAngularVeloTuner extends LinearOpMode {
         telemetry.addData("Max Recommended Angular Velocity (deg)", Math.toDegrees(maxAngVelocity * 0.8));
         telemetry.update();
 
-        PhotonCore.CONTROL_HUB.clearBulkCache();
+
 
         while (!isStopRequested()) idle();
     }

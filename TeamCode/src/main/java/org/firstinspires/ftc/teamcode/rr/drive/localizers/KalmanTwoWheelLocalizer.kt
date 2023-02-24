@@ -12,32 +12,25 @@ class KalmanTwoWheelLocalizer(
 
     // Remember heading is in radians
     private val headingFilter = KalmanFilter(0.25, 0.125)
-    private val wheelPos1Filter = KalmanFilter(9.0, 11.0)
-    private val wheelPos2Filter = KalmanFilter(9.0, 11.0)
+    private val wheelPos1Filter = KalmanFilter(4.0, 5.0)
+    private val wheelPos2Filter = KalmanFilter(4.0, 5.0)
     private val headingVelocityFilter = KalmanFilter(0.500, 0.225)
-    private val wheelPos1VelocityFilter = KalmanFilter(8.0, 7.0)
-    private val wheelPos2VelocityFilter = KalmanFilter(8.0, 7.0)
+    private val wheelPos1VelocityFilter = KalmanFilter(4.0, 5.0)
+    private val wheelPos2VelocityFilter = KalmanFilter(4.0, 5.0)
 
     override fun getHeading(): Double {
-        return headingFilter.filter(localizer.getHeading())
+        return localizer.getHeading()
     }
 
     override fun getWheelPositions(): List<Double> {
-        val poses = localizer.getWheelPositions()
+        return localizer.getWheelPositions()
 
-        return listOf(
-            wheelPos1Filter.filter(poses[0]),
-            wheelPos2Filter.filter(poses[1]),
-        )
+
     }
 
     override fun getWheelVelocities(): List<Double> {
-        val poses = localizer.getWheelVelocities()!!
+        return localizer.getWheelVelocities()!!
 
-        return listOf(
-            wheelPos1VelocityFilter.filter(poses[0]),
-            wheelPos2VelocityFilter.filter(poses[1]),
-        )
     }
 
     override fun getHeadingVelocity(): Double {

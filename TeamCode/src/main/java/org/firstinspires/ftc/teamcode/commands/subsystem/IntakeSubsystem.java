@@ -44,12 +44,13 @@ public class IntakeSubsystem extends SubsystemBase {
     public static double ARM_UP = 0.6;
     public static double ARM_DUNK = 0.58;
     public static double LOW_POLE = 0.0;
+    public static double ARM_MID = 0.4;
 
 
     private boolean isAuto;
 
     public enum IntakeState { INTAKE, DECIDE, OPEN_CLAW, CLOSE_CLAW, LOW_POLE, MEDIUM_POLE}
-    public enum ArmState { INTAKE, TRANSITION,  DEPOSIT, DUNK, LOW_POLE, AUTO_INIT}
+    public enum ArmState { INTAKE, DEPOSIT, DUNK, MIDWAY, LOW_POLE, AUTO_INIT, POLE_DUNK}
     public enum ClawState { OPEN, CLOSED }
     public enum RotateState { INTAKE, MID, TRANSFER }
 
@@ -110,9 +111,6 @@ public class IntakeSubsystem extends SubsystemBase {
             case INTAKE:
                 setArm(ARM_DOWN);
                 break;
-            case TRANSITION:
-                setArm(0.75);
-                break;
             case DEPOSIT:
                 setArm(ARM_UP);
                 break;
@@ -123,7 +121,14 @@ public class IntakeSubsystem extends SubsystemBase {
                 setArm(LOW_POLE);
                 break;
             case AUTO_INIT:
-                setArm(0.66);
+                setArm(0.58);
+                break;
+            case MIDWAY:
+                setArm(ARM_MID);
+                break;
+            case POLE_DUNK:
+                setArm(0.65);
+                break;
         }
     }
 

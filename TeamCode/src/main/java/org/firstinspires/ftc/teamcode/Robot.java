@@ -5,6 +5,7 @@ import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.rr.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.rr.drive.SampleMecanumDriveWithNavX;
 import org.firstinspires.ftc.teamcode.rr.drive.localizers.StandardTrackingWheelLocalizer;
 import org.firstinspires.ftc.teamcode.commands.subsystem.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.commands.subsystem.LiftSubsystem;
@@ -32,7 +33,7 @@ public class Robot {
 
         localizer = new StandardTrackingWheelLocalizer(hardwareMap);
 
-        driveSubsystem = new MecanumDriveSubsystem(new SampleMecanumDrive(hardwareMap), false);
+        driveSubsystem = new MecanumDriveSubsystem(new SampleMecanumDriveWithNavX(hardwareMap), false);
         intake = new IntakeSubsystem(hardwareMap, isAuto);
         lift = new LiftSubsystem(hardwareMap, isAuto);
 

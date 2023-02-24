@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.rr.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.rr.drive.SampleMecanumDriveWithNavX;
 
 /**
  * This is a simple teleop routine for testing localization. Drive the robot around like a normal
@@ -22,18 +23,12 @@ public class LocalizationTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
-        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        SampleMecanumDriveWithNavX drive = new SampleMecanumDriveWithNavX(hardwareMap);
 
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 //        drive.getOdometryServos().get(0).setPosition(0.9);
 //        drive.getOdometryServos().get(1).setPosition(0.03);
-
-
-
-        PhotonCore.CONTROL_HUB.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
-        PhotonCore.EXPANSION_HUB.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
-        PhotonCore.enable();
 
 
         waitForStart();
@@ -55,7 +50,7 @@ public class LocalizationTest extends LinearOpMode {
             telemetry.addData("heading", poseEstimate.getHeading());
             telemetry.update();
 
-            PhotonCore.CONTROL_HUB.clearBulkCache();
+
         }
     }
 }

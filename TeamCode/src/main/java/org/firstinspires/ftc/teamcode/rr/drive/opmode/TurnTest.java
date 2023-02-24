@@ -21,9 +21,7 @@ public class TurnTest extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
-        PhotonCore.CONTROL_HUB.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
-        PhotonCore.EXPANSION_HUB.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
-        PhotonCore.enable();
+
 
         waitForStart();
 
@@ -31,8 +29,6 @@ public class TurnTest extends LinearOpMode {
 
         drive.turn(Math.toRadians(ANGLE));
 
-        while(opModeIsActive()){
-            PhotonCore.CONTROL_HUB.clearBulkCache();
-        }
+
     }
 }

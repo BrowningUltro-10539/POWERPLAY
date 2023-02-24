@@ -7,7 +7,7 @@ import com.acmerobotics.roadrunner.localization.TwoTrackingWheelLocalizer;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.teamcode.rr.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.rr.drive.SampleMecanumDriveWithNavX;
 import org.firstinspires.ftc.teamcode.rr.util.Encoder;
 
 import java.util.Arrays;
@@ -33,7 +33,7 @@ import java.util.List;
  *    \--------------/
  *
  */
-public class TwoWheelTrackingLocalizer extends TwoTrackingWheelLocalizer {
+public class TwoWheelTrackingLocalizerWithNavX extends TwoTrackingWheelLocalizer {
     public static double TICKS_PER_REV = 8192;
     public static double WHEEL_RADIUS = 0.688975; // in
     public static double GEAR_RATIO = 1; // output (wheel) speed / input (encoder) speed
@@ -52,9 +52,9 @@ public class TwoWheelTrackingLocalizer extends TwoTrackingWheelLocalizer {
     // Perpendicular is perpendicular to the forward axis
     private Encoder parallelEncoder, perpendicularEncoder;
 
-    private SampleMecanumDrive drive;
+    private SampleMecanumDriveWithNavX drive;
 
-    public TwoWheelTrackingLocalizer(HardwareMap hardwareMap, SampleMecanumDrive drive) {
+    public TwoWheelTrackingLocalizerWithNavX(HardwareMap hardwareMap, SampleMecanumDriveWithNavX drive) {
         super(Arrays.asList(
                 new Pose2d(PARALLEL_X, PARALLEL_Y, 0),
                 new Pose2d(PERPENDICULAR_X, PERPENDICULAR_Y, Math.toRadians(90))

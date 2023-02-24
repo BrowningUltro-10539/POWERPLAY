@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.rr.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.rr.drive.SampleMecanumDriveWithNavX;
 import org.firstinspires.ftc.teamcode.rr.trajectorysequence.TrajectorySequence;
 
 /*
@@ -32,15 +33,13 @@ public class FollowerPIDTuner extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        SampleMecanumDriveWithNavX drive = new SampleMecanumDriveWithNavX(hardwareMap);
 
         Pose2d startPose = new Pose2d(-DISTANCE / 2, -DISTANCE / 2, 0);
 
         drive.setPoseEstimate(startPose);
 
-        PhotonCore.CONTROL_HUB.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
-        PhotonCore.EXPANSION_HUB.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
-        PhotonCore.enable();
+
 
 
         waitForStart();
@@ -59,7 +58,6 @@ public class FollowerPIDTuner extends LinearOpMode {
                     .turn(Math.toRadians(90))
                     .build();
             drive.followTrajectorySequence(trajSeq);
-            PhotonCore.CONTROL_HUB.clearBulkCache();
         }
     }
 }

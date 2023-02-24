@@ -1,5 +1,17 @@
 package org.firstinspires.ftc.teamcode.rr.drive;
 
+import static org.firstinspires.ftc.teamcode.rr.drive.DriveConstants.MAX_ACCEL;
+import static org.firstinspires.ftc.teamcode.rr.drive.DriveConstants.MAX_ANG_ACCEL;
+import static org.firstinspires.ftc.teamcode.rr.drive.DriveConstants.MAX_ANG_VEL;
+import static org.firstinspires.ftc.teamcode.rr.drive.DriveConstants.MAX_VEL;
+import static org.firstinspires.ftc.teamcode.rr.drive.DriveConstants.MOTOR_VELO_PID;
+import static org.firstinspires.ftc.teamcode.rr.drive.DriveConstants.RUN_USING_ENCODER;
+import static org.firstinspires.ftc.teamcode.rr.drive.DriveConstants.TRACK_WIDTH;
+import static org.firstinspires.ftc.teamcode.rr.drive.DriveConstants.encoderTicksToInches;
+import static org.firstinspires.ftc.teamcode.rr.drive.DriveConstants.kA;
+import static org.firstinspires.ftc.teamcode.rr.drive.DriveConstants.kStatic;
+import static org.firstinspires.ftc.teamcode.rr.drive.DriveConstants.kV;
+
 import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.config.Config;
@@ -17,58 +29,43 @@ import com.acmerobotics.roadrunner.trajectory.constraints.MinVelocityConstraint;
 import com.acmerobotics.roadrunner.trajectory.constraints.ProfileAccelerationConstraint;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAccelerationConstraint;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
-import com.qualcomm.hardware.bosch.BNO055IMU;
-
-import com.qualcomm.hardware.lynx.LynxModule;
+import com.qualcomm.hardware.kauailabs.NavxMicroNavigationSensor;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.hardware.IntegratingGyroscope;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
-import org.checkerframework.checker.units.qual.K;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AngularVelocity;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import org.firstinspires.ftc.teamcode.rr.drive.localizers.KalmanTwoWheelLocalizer;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.teamcode.rr.drive.localizers.TwoWheelTrackingLocalizer;
+import org.firstinspires.ftc.teamcode.rr.drive.localizers.TwoWheelTrackingLocalizerWithNavX;
 import org.firstinspires.ftc.teamcode.rr.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.rr.trajectorysequence.TrajectorySequenceBuilder;
 import org.firstinspires.ftc.teamcode.rr.trajectorysequence.TrajectorySequenceRunner;
-import org.firstinspires.ftc.teamcode.rr.util.AxisDirection;
-import org.firstinspires.ftc.teamcode.rr.util.BNO055IMUUtil;
 import org.firstinspires.ftc.teamcode.rr.util.LynxModuleUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.firstinspires.ftc.teamcode.rr.drive.DriveConstants.MAX_ACCEL;
-import static org.firstinspires.ftc.teamcode.rr.drive.DriveConstants.MAX_ANG_ACCEL;
-import static org.firstinspires.ftc.teamcode.rr.drive.DriveConstants.MAX_ANG_VEL;
-import static org.firstinspires.ftc.teamcode.rr.drive.DriveConstants.MAX_VEL;
-import static org.firstinspires.ftc.teamcode.rr.drive.DriveConstants.MOTOR_VELO_PID;
-import static org.firstinspires.ftc.teamcode.rr.drive.DriveConstants.RUN_USING_ENCODER;
-import static org.firstinspires.ftc.teamcode.rr.drive.DriveConstants.TRACK_WIDTH;
-import static org.firstinspires.ftc.teamcode.rr.drive.DriveConstants.encoderTicksToInches;
-import static org.firstinspires.ftc.teamcode.rr.drive.DriveConstants.kA;
-import static org.firstinspires.ftc.teamcode.rr.drive.DriveConstants.kStatic;
-import static org.firstinspires.ftc.teamcode.rr.drive.DriveConstants.kV;
-
 /*
  * Simple mecanum drive hardware implementation for REV hardware.
  */
 @Config
-public class SampleMecanumDrive extends MecanumDrive {
+public class SampleMecanumDriveWithNavX extends MecanumDrive {
 //    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(3.3, 0, 0.8);
 //    public static PIDCoefficients HEADING_PID = new PIDCoefficients(7, 0, 1);
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(11, 0, 1);
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(12, 0, 0.03);
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(7.9, 0, 1);
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(8, 0, 1);
 
 
     public static double LATERAL_MULTIPLIER = 1;
@@ -82,24 +79,20 @@ public class SampleMecanumDrive extends MecanumDrive {
     private static final TrajectoryVelocityConstraint VEL_CONSTRAINT = getVelocityConstraint(MAX_VEL, MAX_ANG_VEL, TRACK_WIDTH);
     private static final TrajectoryAccelerationConstraint ACCEL_CONSTRAINT = getAccelerationConstraint(MAX_ACCEL);
 
-
-
     private TrajectoryFollower follower;
 
     private DcMotorEx leftFront, leftRear, rightRear, rightFront;
     private List<DcMotorEx> motors;
 
-
-    private Servo yPod, xPod;
-    private List<Servo> odometryServos;
-
-    private IMU imu;
     private VoltageSensor batteryVoltageSensor;
+
+    private IntegratingGyroscope gyroscope;
+    private NavxMicroNavigationSensor NAV_X;
 
     public static double xOffset = 0;
     public static double yOffset = 0;
 
-    public SampleMecanumDrive(HardwareMap hardwareMap) {
+    public SampleMecanumDriveWithNavX(HardwareMap hardwareMap) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
 
         follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
@@ -110,15 +103,9 @@ public class SampleMecanumDrive extends MecanumDrive {
         batteryVoltageSensor = hardwareMap.voltageSensor.iterator().next();
 
 
-        // TODO: adjust the names of the following hardware devices to match your configuration
-        imu = hardwareMap.get(IMU.class, "imu");
-        IMU.Parameters parameters = new IMU.Parameters(
-            new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.FORWARD, RevHubOrientationOnRobot.UsbFacingDirection.RIGHT));
-        imu.initialize(parameters);
+        NAV_X = hardwareMap.get(NavxMicroNavigationSensor.class, "navx");
+        gyroscope = (IntegratingGyroscope) NAV_X;
 
-
-
-       // BNO055IMUUtil.remapZAxis(imu, AxisDirection.NEG_X);
 
         leftFront = hardwareMap.get(DcMotorEx.class, "LT");
         leftRear = hardwareMap.get(DcMotorEx.class, "LB");
@@ -127,7 +114,7 @@ public class SampleMecanumDrive extends MecanumDrive {
 
 
         motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
-        odometryServos = Arrays.asList(yPod, xPod);
+
 
 
         for (DcMotorEx motor : motors) {
@@ -151,7 +138,7 @@ public class SampleMecanumDrive extends MecanumDrive {
 
 
 
-        setLocalizer(new TwoWheelTrackingLocalizer(hardwareMap, this));
+        setLocalizer(new TwoWheelTrackingLocalizerWithNavX(hardwareMap, this));
 
         trajectorySequenceRunner = new TrajectorySequenceRunner(follower, HEADING_PID, batteryVoltageSensor);
     }
@@ -304,17 +291,17 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     @Override
     public double getRawExternalHeading() {
-        return imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+        return (double) NAV_X.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS).firstAngle;
     }
 
 
     @Override
     public Double getExternalHeadingVelocity() {
-        return (double) imu.getRobotAngularVelocity(AngleUnit.RADIANS).zRotationRate;
+        return (double) NAV_X.getAngularVelocity(AngleUnit.RADIANS).zRotationRate;
     }
 
     public AngularVelocity getAngularVelocityObject(){
-        return imu.getRobotAngularVelocity(AngleUnit.RADIANS);
+        return NAV_X.getAngularVelocity(AngleUnit.RADIANS);
     }
 
     public static TrajectoryVelocityConstraint getVelocityConstraint(double maxVel, double maxAngularVel, double trackWidth) {
@@ -328,7 +315,5 @@ public class SampleMecanumDrive extends MecanumDrive {
         return new ProfileAccelerationConstraint(maxAccel);
     }
 
-    public List<Servo> getOdometryServos(){
-        return odometryServos;
-    }
+
 }

@@ -6,10 +6,14 @@ import com.acmerobotics.roadrunner.profile.MotionProfileGenerator;
 import com.acmerobotics.roadrunner.profile.MotionState;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.controller.PIDController;
+import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.teamcode.rr.util.Encoder;
 
 @Config
 public class LiftSubsystem extends SubsystemBase {
@@ -17,7 +21,7 @@ public class LiftSubsystem extends SubsystemBase {
 
     public final MotorEx lift1;
     public final MotorEx lift2;
-    public final MotorEx liftEncoder;
+    public final Encoder liftEncoder;
 
     private MotionProfile profile;
     public MotionState currentState;
@@ -50,11 +54,12 @@ public class LiftSubsystem extends SubsystemBase {
     public LiftSubsystem(HardwareMap hardwareMap, boolean isAuto){
         this.lift1 = new MotorEx(hardwareMap, "liftMotorOne");
         this.lift2 = new MotorEx(hardwareMap, "liftMotorTwo");
-        this.liftEncoder = new MotorEx(hardwareMap, "LB");
+        this.liftEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "LB"));
 
         this.lift1.setInverted(false);
         this.lift2.setInverted(true);
-        this.liftEncoder.setInverted(false);
+        this.liftEncoder.setDirection(Encoder.Direction.FORWARD);
+//        this.liftEncoder.setInverted(false);
 
 
 
@@ -62,7 +67,6 @@ public class LiftSubsystem extends SubsystemBase {
         timer.reset();
 
         if(isAuto){
-            liftEncoder.encoder.reset();
         }
 
         this.profile = MotionProfileGenerator.generateSimpleMotionProfile(new MotionState(1, 0), new MotionState(0, 0), 30, 25);
@@ -102,7 +106,7 @@ public class LiftSubsystem extends SubsystemBase {
         }
 
     }
-    public void read(){ liftPosition = liftEncoder.encoder.getPosition() * SLIDE_TICKS_PER_INCH; }
+    public void read(){ liftPosition = liftEncoder.getCurrentPosition() * SLIDE_TICKS_PER_INCH; }
 
     public void write(){
         lift1.set(liftPower);

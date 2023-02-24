@@ -11,7 +11,9 @@ import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngularVelocity;
 import org.firstinspires.ftc.teamcode.rr.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.rr.drive.SampleMecanumDriveWithNavX;
 import org.firstinspires.ftc.teamcode.rr.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.rr.trajectorysequence.TrajectorySequenceBuilder;
 
@@ -22,12 +24,12 @@ import org.firstinspires.ftc.teamcode.rr.trajectorysequence.TrajectorySequenceBu
  */
 public class MecanumDriveSubsystem extends SubsystemBase {
 
-    private final SampleMecanumDrive drive;
+    private final SampleMecanumDriveWithNavX drive;
     private final boolean fieldCentric;
 
 
 
-    public MecanumDriveSubsystem(SampleMecanumDrive drive, boolean isFieldCentric) {
+    public MecanumDriveSubsystem(SampleMecanumDriveWithNavX drive, boolean isFieldCentric) {
         this.drive = drive;
         fieldCentric = isFieldCentric;
     }
@@ -55,14 +57,13 @@ public class MecanumDriveSubsystem extends SubsystemBase {
     public void drive(double leftY, double leftX, double rightX) {
         Pose2d poseEstimate = getPoseEstimate();
 
-        double x = 0, y = 0, adjX = drive.xOffset - getPitch(), adjY = drive.yOffset - getYaw();
+        double x = 0, y = 0;
 
         Vector2d input = new Vector2d(-leftY, -leftX).rotated(
                 fieldCentric ? -poseEstimate.getHeading() : 0
         );
 
-        if(Math.abs(adjY) > Math.toRadians(2)) y = adjY;
-        if(Math.abs(adjX) > Math.toRadians(2)) x = adjX;
+
 
 
         drive.setWeightedDrivePower(
@@ -82,13 +83,7 @@ public class MecanumDriveSubsystem extends SubsystemBase {
         return drive.getPoseEstimate();
     }
 
-    public double getPitch(){
-        return drive.getOrientation().secondAngle;
-    }
 
-    public double getYaw(){
-        return drive.getOrientation().thirdAngle;
-    }
 
     public TrajectoryBuilder trajectoryBuilder(Pose2d startPose) {
         return drive.trajectoryBuilder(startPose);
@@ -139,4 +134,7 @@ public class MecanumDriveSubsystem extends SubsystemBase {
         return drive.getLocalizer();
     }
 
+    public AngularVelocity getAngVelObj(){
+        return drive.getAngularVelocityObject();
+    }
 }

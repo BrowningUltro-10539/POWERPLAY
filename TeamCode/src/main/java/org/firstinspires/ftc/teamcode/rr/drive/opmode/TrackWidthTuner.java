@@ -45,9 +45,7 @@ public class TrackWidthTuner extends LinearOpMode {
         telemetry.addLine("Make sure your robot has enough clearance to turn smoothly");
         telemetry.update();
 
-        PhotonCore.CONTROL_HUB.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
-        PhotonCore.EXPANSION_HUB.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
-        PhotonCore.enable();
+
 
         waitForStart();
 
@@ -88,7 +86,7 @@ public class TrackWidthTuner extends LinearOpMode {
                 trackWidthStats.getStandardDeviation() / Math.sqrt(NUM_TRIALS)));
         telemetry.update();
 
-        PhotonCore.CONTROL_HUB.clearBulkCache();
+
 
         while (!isStopRequested()) {
             idle();

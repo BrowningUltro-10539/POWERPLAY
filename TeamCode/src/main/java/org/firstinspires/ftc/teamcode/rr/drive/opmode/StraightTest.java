@@ -32,11 +32,6 @@ public class StraightTest extends LinearOpMode {
                 .forward(DISTANCE)
                 .build();
 
-        PhotonCore.CONTROL_HUB.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
-        PhotonCore.EXPANSION_HUB.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
-        PhotonCore.enable();
-
-
         waitForStart();
 
         if (isStopRequested()) return;
@@ -49,7 +44,7 @@ public class StraightTest extends LinearOpMode {
         telemetry.addData("finalHeading", poseEstimate.getHeading());
         telemetry.update();
 
-        PhotonCore.CONTROL_HUB.clearBulkCache();
+
 
         while (!isStopRequested() && opModeIsActive()) ;
     }
