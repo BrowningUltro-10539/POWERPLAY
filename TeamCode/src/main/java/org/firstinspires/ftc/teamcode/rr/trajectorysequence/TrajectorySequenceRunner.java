@@ -23,6 +23,7 @@ import org.firstinspires.ftc.teamcode.rr.trajectorysequence.sequencesegment.Traj
 import org.firstinspires.ftc.teamcode.rr.trajectorysequence.sequencesegment.TurnSegment;
 import org.firstinspires.ftc.teamcode.rr.trajectorysequence.sequencesegment.WaitSegment;
 import org.firstinspires.ftc.teamcode.rr.util.DashboardUtil;
+import org.firstinspires.ftc.teamcode.rr.util.LogFiles;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -61,13 +62,23 @@ public class TrajectorySequenceRunner {
 
     private VoltageSensor voltageSensor;
 
-    public TrajectorySequenceRunner(TrajectoryFollower follower, PIDCoefficients headingPIDCoefficients, VoltageSensor voltageSensor) {
+    private List<Integer> lastDriveEncPositions, lastDriveEncVels, lastTrackingEncPositions, lastTrackingEncVels;
+
+    public TrajectorySequenceRunner(
+            TrajectoryFollower follower, PIDCoefficients headingPIDCoefficients, VoltageSensor voltageSensor,
+            List<Integer> lastDriveEncPositions, List<Integer> lastDriveEncVels, List<Integer> lastTrackingEncPositions, List<Integer> lastTrackingEncVels
+    ) {
         this.follower = follower;
 
         turnController = new PIDFController(headingPIDCoefficients);
         turnController.setInputBounds(0, 2 * Math.PI);
 
         this.voltageSensor = voltageSensor;
+
+        this.lastDriveEncPositions = lastDriveEncPositions;
+        this.lastDriveEncVels = lastDriveEncVels;
+        this.lastTrackingEncPositions = lastTrackingEncPositions;
+        this.lastTrackingEncVels = lastTrackingEncVels;
 
         clock = NanoClock.system();
 
@@ -186,7 +197,6 @@ public class TrajectorySequenceRunner {
 
         poseHistory.add(poseEstimate);
 
-
         if (POSE_HISTORY_LIMIT > -1 && poseHistory.size() > POSE_HISTORY_LIMIT) {
             poseHistory.removeFirst();
         }
@@ -197,6 +207,13 @@ public class TrajectorySequenceRunner {
             driveSignal = new DriveSignal(
                     driveSignal.getVel().times(NOMINAL_VOLTAGE / voltage),
                     driveSignal.getAccel().times(NOMINAL_VOLTAGE / voltage)
+            );
+        }
+
+        if (targetPose != null) {
+            LogFiles.record(
+                    targetPose, poseEstimate, voltage,
+                    lastDriveEncPositions, lastDriveEncVels, lastTrackingEncPositions, lastTrackingEncVels
             );
         }
 

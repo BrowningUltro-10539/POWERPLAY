@@ -1,4 +1,5 @@
-//package org.firstinspires.ftc.teamcode.common.Disabled;/*
+//package org.firstinspires.ftc.teamcode.common;
+//        /*
 // * Copyright (c) 2021 OpenFTC Team
 // *
 // * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -28,6 +29,7 @@
 //import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 //import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 //import com.arcrobotics.ftclib.command.WaitCommand;
+//import com.outoftheboxrobotics.photoncore.PhotonCore;
 //import com.qualcomm.hardware.lynx.LynxModule;
 //import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 //import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -52,8 +54,7 @@
 //import java.util.ArrayList;
 //
 //@Autonomous
-//@Disabled
-//public class APRIL_TAG_RED_ALLIANCE_RIGHT_VERT_TESTING extends LinearOpMode {
+//public class APRIL_TAG_RED_RIGHT extends LinearOpMode {
 //
 //    private Robot robot;
 //    private ElapsedTime timer;
@@ -100,6 +101,9 @@
 //        sleep(1500);
 //        robot.intake.update(IntakeSubsystem.ClawState.CLOSED);
 //
+//
+//
+//
 //        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
 //        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
 //        aprilTagDetectionPipeline = new AprilTagDetectionPipeline(tagsize, fx, fy, cx, cy);
@@ -142,14 +146,17 @@
 //                .build();
 //
 //        TrajectorySequence toParkingOne = robot.driveSubsystem.trajectorySequenceBuilder(toPoleAfterConeIntake.end())
+//                .forward(2)
 //                .lineToLinearHeading(new Pose2d(10, -20, Math.toRadians(90)))
 //                .build();
 //
 //        TrajectorySequence toParkingTwo = robot.driveSubsystem.trajectorySequenceBuilder(toPoleAfterConeIntake.end())
+//
 //                .lineToLinearHeading(new Pose2d(37, -20, Math.toRadians(90)))
 //                .build();
 //
 //        TrajectorySequence toParkingThree = robot.driveSubsystem.trajectorySequenceBuilder(toPoleAfterConeIntake.end())
+//                .forward(2)
 //                .lineToLinearHeading(new Pose2d(60, -20, Math.toRadians(90)))
 //                .build();
 //
@@ -168,6 +175,7 @@
 //
 //            robot.intake.loop();
 //            robot.lift.loop();
+//
 //
 //            robot.write();
 //
@@ -230,6 +238,7 @@
 //        if (tagOfInterest == null) {
 //            //default path
 //        } else if (tagOfInterest.id == 16) {
+//            CommandScheduler.getInstance().reset();
 //            CommandScheduler.getInstance().schedule(
 //                    new SequentialCommandGroup(
 //                            new AutoPreloadCommand(robot, toPolePreload, toConeStackAfterPreload),
@@ -237,11 +246,12 @@
 //                            new WaitCommand(150),
 //                            new AutoCycleCommandV6(robot, toPoleAfterConeIntake, toConeStackAfterPoleDeposit, AutoConstants.SLIDE_HEIGHTS[2]),
 //                            new WaitCommand(150),
-//                            new AutoCycleCommandV6(robot,  toPoleAfterConeIntake, toParkingOne, AutoConstants.SLIDE_HEIGHTS[3])
+//                            new AutoCycleCommandV6(robot,  toPoleAfterConeIntake, toParkingOne, 0)
 //                    )
 //
 //            );
 //        } else if (tagOfInterest.id == 14) {
+//            CommandScheduler.getInstance().reset();
 //            CommandScheduler.getInstance().schedule(
 //                    new SequentialCommandGroup(
 //                            new AutoPreloadCommand(robot, toPolePreload, toConeStackAfterPreload),
@@ -249,11 +259,12 @@
 //                            new WaitCommand(150),
 //                            new AutoCycleCommandV6(robot, toPoleAfterConeIntake, toConeStackAfterPoleDeposit, AutoConstants.SLIDE_HEIGHTS[2]),
 //                            new WaitCommand(150),
-//                            new AutoCycleCommandV6(robot,  toPoleAfterConeIntake, toParkingThree, AutoConstants.SLIDE_HEIGHTS[3])
+//                            new AutoCycleCommandV6(robot,  toPoleAfterConeIntake, toParkingThree, 0)
 //                    )
 //
 //            );
 //        } else if (tagOfInterest.id == 19) {
+//            CommandScheduler.getInstance().reset();
 //            CommandScheduler.getInstance().schedule(
 //                    new SequentialCommandGroup(
 //                            new AutoPreloadCommand(robot, toPolePreload, toConeStackAfterPreload),
@@ -261,7 +272,7 @@
 //                            new WaitCommand(150),
 //                            new AutoCycleCommandV6(robot, toPoleAfterConeIntake, toConeStackAfterPoleDeposit, AutoConstants.SLIDE_HEIGHTS[2]),
 //                            new WaitCommand(150),
-//                            new AutoCycleCommandV6(robot,  toPoleAfterConeIntake, toParkingTwo, AutoConstants.SLIDE_HEIGHTS[3])
+//                            new AutoCycleCommandV6(robot,  toPoleAfterConeIntake, toParkingTwo, 0)
 //                    )
 //
 //            );
@@ -273,23 +284,17 @@
 //        while (opModeIsActive()) {
 //            robot.read();
 //
-//            CommandScheduler.getInstance().run();
-//
-//
 //            robot.intake.loop();
 //            robot.lift.loop();
-//
 //
 //            robot.write();
 //
 //            double loop = System.nanoTime();
 //            telemetry.addData("hz ", 1000000000 / (loop - loopTime));
-//            telemetry.addData("Lift Pos", robot.lift.getLiftPos());
-//            telemetry.addData("Lift Target Pos", robot.lift.liftTargetPosition);
-//
-//            telemetry.addData("Robot Pose: ", robot.driveSubsystem.getLocalizer().getPoseEstimate());
 //            loopTime = loop;
 //            telemetry.update();
+//
+//
 //
 //
 //

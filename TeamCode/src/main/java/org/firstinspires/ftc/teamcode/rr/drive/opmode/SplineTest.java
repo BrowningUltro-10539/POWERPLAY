@@ -3,14 +3,10 @@ package org.firstinspires.ftc.teamcode.rr.drive.opmode;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
-import com.outoftheboxrobotics.photoncore.PhotonCore;
-import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.rr.drive.SampleMecanumDrive;
-import org.firstinspires.ftc.teamcode.rr.drive.SampleMecanumDriveWithNavX;
 
 /*
  * This is an example of a more complex path to really test the tuning.
@@ -19,16 +15,11 @@ import org.firstinspires.ftc.teamcode.rr.drive.SampleMecanumDriveWithNavX;
 public class SplineTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
-        SampleMecanumDriveWithNavX drive = new SampleMecanumDriveWithNavX(hardwareMap);
-
-
+        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
         waitForStart();
 
-
-
         if (isStopRequested()) return;
-
 
         Trajectory traj = drive.trajectoryBuilder(new Pose2d())
                 .splineTo(new Vector2d(30, 30), 0)
@@ -43,7 +34,5 @@ public class SplineTest extends LinearOpMode {
                         .splineTo(new Vector2d(0, 0), Math.toRadians(180))
                         .build()
         );
-
-
     }
 }

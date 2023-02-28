@@ -13,7 +13,6 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngularVelocity;
 import org.firstinspires.ftc.teamcode.rr.drive.SampleMecanumDrive;
-import org.firstinspires.ftc.teamcode.rr.drive.SampleMecanumDriveWithNavX;
 import org.firstinspires.ftc.teamcode.rr.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.rr.trajectorysequence.TrajectorySequenceBuilder;
 
@@ -24,12 +23,12 @@ import org.firstinspires.ftc.teamcode.rr.trajectorysequence.TrajectorySequenceBu
  */
 public class MecanumDriveSubsystem extends SubsystemBase {
 
-    private final SampleMecanumDriveWithNavX drive;
+    private final SampleMecanumDrive drive;
     private final boolean fieldCentric;
 
 
 
-    public MecanumDriveSubsystem(SampleMecanumDriveWithNavX drive, boolean isFieldCentric) {
+    public MecanumDriveSubsystem(SampleMecanumDrive drive, boolean isFieldCentric) {
         this.drive = drive;
         fieldCentric = isFieldCentric;
     }
@@ -134,7 +133,4 @@ public class MecanumDriveSubsystem extends SubsystemBase {
         return drive.getLocalizer();
     }
 
-    public AngularVelocity getAngVelObj(){
-        return drive.getAngularVelocityObject();
-    }
 }

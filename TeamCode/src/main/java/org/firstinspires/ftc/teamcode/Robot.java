@@ -5,8 +5,6 @@ import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.rr.drive.SampleMecanumDrive;
-import org.firstinspires.ftc.teamcode.rr.drive.SampleMecanumDriveWithNavX;
-import org.firstinspires.ftc.teamcode.rr.drive.localizers.StandardTrackingWheelLocalizer;
 import org.firstinspires.ftc.teamcode.commands.subsystem.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.commands.subsystem.LiftSubsystem;
 import org.firstinspires.ftc.teamcode.commands.subsystem.MecanumDriveSubsystem;
@@ -14,9 +12,7 @@ import org.firstinspires.ftc.teamcode.commands.subsystem.MecanumDriveSubsystem;
 import java.util.List;
 
 public class Robot {
-
-
-    public StandardTrackingWheelLocalizer localizer;
+    
     public MecanumDriveSubsystem driveSubsystem;
 
     public IntakeSubsystem intake;
@@ -31,11 +27,15 @@ public class Robot {
     public Robot(HardwareMap hardwareMap, boolean isAuto){
         this.isAuto = isAuto;
 
-        localizer = new StandardTrackingWheelLocalizer(hardwareMap);
 
-        driveSubsystem = new MecanumDriveSubsystem(new SampleMecanumDriveWithNavX(hardwareMap), false);
+
+        driveSubsystem = new MecanumDriveSubsystem(new SampleMecanumDrive(hardwareMap), false);
         intake = new IntakeSubsystem(hardwareMap, isAuto);
         lift = new LiftSubsystem(hardwareMap, isAuto);
+
+        if(isAuto){
+            lift.lift2.encoder.reset();
+        }
 
         controllers = hardwareMap.getAll(LynxModule.class);
 
@@ -48,13 +48,21 @@ public class Robot {
     public void read(){
         intake.read();
         lift.read();
-        robotPose = localizer.getPose();
+
+        if(isAuto){
+            robotPose = driveSubsystem.getPoseEstimate();
+        }
+
     }
 
     public void write(){
         intake.write();
         lift.write();
-        driveSubsystem.update();
+
+        if(isAuto){
+            driveSubsystem.update();
+        }
+
     }
 
     public void reset(){

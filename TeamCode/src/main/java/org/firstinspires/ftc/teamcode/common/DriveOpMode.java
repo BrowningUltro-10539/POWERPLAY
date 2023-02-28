@@ -72,7 +72,7 @@ public class DriveOpMode extends CommandOpMode {
             schedule(new SequentialCommandGroup(
                     new InstantCommand(() -> robot.intake.update(IntakeSubsystem.IntakeState.DECIDE)),
                     new WaitCommand(100),
-                    new NewLiftPositionCommand(robot.lift, 6, 200, 200, 2)
+                    new NewLiftPositionCommand(robot.lift, 5, 200, 200, 2)
 
             ));
         }
@@ -81,7 +81,7 @@ public class DriveOpMode extends CommandOpMode {
             schedule(new SequentialCommandGroup(
                     new InstantCommand(() -> robot.intake.update(IntakeSubsystem.IntakeState.MEDIUM_POLE)),
                     new WaitCommand(100),
-                    new NewLiftPositionCommand(robot.lift,12, 200 ,200, 2)
+                    new NewLiftPositionCommand(robot.lift,11, 200 ,200, 2)
                     ));
 
         }
@@ -90,7 +90,7 @@ public class DriveOpMode extends CommandOpMode {
             schedule(new SequentialCommandGroup(
                     new InstantCommand(() -> robot.intake.update(IntakeSubsystem.IntakeState.DECIDE)),
                     new WaitCommand(100),
-                   new NewLiftPositionCommand(robot.lift, 21.5, 200, 200, 2)
+                   new NewLiftPositionCommand(robot.lift, 20, 200, 200, 2)
 
             ));
         }
@@ -109,6 +109,9 @@ public class DriveOpMode extends CommandOpMode {
         }
 
 
+
+
+
         if(gamepad1.left_trigger > 0.25){
             robot.lift.setSlideFactor(-1);
         } else if(gamepad1.right_trigger > 0.25){
@@ -116,7 +119,7 @@ public class DriveOpMode extends CommandOpMode {
         }
 
 
-        schedule(new MecanumDriveCommand(robot.driveSubsystem, () -> gamepad1.left_stick_y, () -> gamepad1.left_stick_x, () -> -gamepad1.right_stick_x));
+        schedule(new MecanumDriveCommand(robot.driveSubsystem, () -> -gamepad1.left_stick_y, () -> -gamepad1.left_stick_x, () -> gamepad1.right_stick_x));
 
 
 
@@ -131,10 +134,6 @@ public class DriveOpMode extends CommandOpMode {
 
         double loop = System.nanoTime();
         telemetry.addData("hz ", 1000000000 / (loop - loopTime));
-//        telemetry.addData("Lift Position,", robot.lift.getLiftPos());
-        telemetry.addData("Z-ROTATION: ", robot.driveSubsystem.getAngVelObj().zRotationRate);
-        telemetry.addData("Y-ROTATION: ", robot.driveSubsystem.getAngVelObj().yRotationRate);
-        telemetry.addData("X-ROTATION: ", robot.driveSubsystem.getAngVelObj().xRotationRate);
         loopTime = loop;
         telemetry.update();
 

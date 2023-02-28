@@ -4,10 +4,7 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.outoftheboxrobotics.photoncore.PhotonCore;
-import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -47,8 +44,6 @@ public class MaxAngularVeloTuner extends LinearOpMode {
         telemetry.addLine("Press start when ready.");
         telemetry.update();
 
-
-
         waitForStart();
 
         telemetry.clearAll();
@@ -72,8 +67,6 @@ public class MaxAngularVeloTuner extends LinearOpMode {
         telemetry.addData("Max Recommended Angular Velocity (rad)", maxAngVelocity * 0.8);
         telemetry.addData("Max Recommended Angular Velocity (deg)", Math.toDegrees(maxAngVelocity * 0.8));
         telemetry.update();
-
-
 
         while (!isStopRequested()) idle();
     }
