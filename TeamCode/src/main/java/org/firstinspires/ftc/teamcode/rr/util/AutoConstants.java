@@ -15,7 +15,7 @@ public class AutoConstants {
     public static double PRELOAD_SPLINE_POLE_Y = -7;
     public static double PRELOAD_POLE_HEADING = Math.toRadians(140);
 
-    public static double[] SLIDE_HEIGHTS = {4.2, 3.5, 2.3, 1.5, 0};
+    public static double[] SLIDE_HEIGHTS = {4.5, 3.7, 2.3, 1.5, 0};
 
 
     public static double CONE_STACK_SPLINE_X = 48.0;

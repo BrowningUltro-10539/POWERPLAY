@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.common;
+package org.firstinspires.ftc.teamcode.common.Disabled;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
@@ -26,7 +26,6 @@ import org.openftc.easyopencv.OpenCvCamera;
 
 @Autonomous(name = "RIGHT_OLD_AUTO", group = "COMPETITION")
 @Disabled
-
 public class RightAuto extends LinearOpMode {
     private Robot robot;
     private OpenCvCamera camera;

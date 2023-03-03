@@ -3,25 +3,27 @@ package org.firstinspires.ftc.teamcode.common;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
-import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.commands.Auto.Cycle.AutoCycleCommandV6;
+import org.firstinspires.ftc.teamcode.commands.Auto.Cycle.AutoCycleCommandV7;
 import org.firstinspires.ftc.teamcode.commands.Auto.Cycle.AutoPreloadCommand;
-import org.firstinspires.ftc.teamcode.commands.Auto.TrajectoryFollowerCommand;
+import org.firstinspires.ftc.teamcode.commands.Auto.Cycle.AutoPreloadCommandV2;
 import org.firstinspires.ftc.teamcode.commands.subsystem.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.rr.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.rr.util.AutoConstants;
 import org.firstinspires.ftc.teamcode.vision.SleeveDetection;
 import org.openftc.easyopencv.OpenCvCamera;
 
-@Autonomous(name = "RIGHT_OFFICIAL_AUTO", group = "COMPETITION")
-public class RightAutoWithNavX extends LinearOpMode {
+@Autonomous(name = "1+4", group = "COMPETITION")
+@Disabled
+public class RightAutoWithNavX_Faster extends LinearOpMode {
     private Robot robot;
     private OpenCvCamera camera;
     private SleeveDetection pipeline = new SleeveDetection();
@@ -92,17 +94,27 @@ public class RightAutoWithNavX extends LinearOpMode {
                 .splineTo(new Vector2d(AutoConstants.POLE_SPLINE_X + 4, AutoConstants.POLE_SPLINE_Y + 3.5), Math.toRadians(AutoConstants.POLE_HEADING - 1))
                 .build();
 
-        TrajectorySequence toParkingSpotOne = robot.driveSubsystem.trajectorySequenceBuilder(toPoleAfterConeIntakeCycle3.end())
+        TrajectorySequence toConeStackAfterPoleDepositCycle4 = robot.driveSubsystem.trajectorySequenceBuilder(toPoleAfterConeIntakeCycle3.end())
+                .splineTo(new Vector2d(AutoConstants.CONE_STACK_SPLINE_X, AutoConstants.CONE_STACK_SPLINE_Y), AutoConstants.CONE_STACK_HEADING)
+                .lineTo(new Vector2d(AutoConstants.CONE_STACK_LINE_X + 4, AutoConstants.CONE_STACK_LINE_Y))
+                .build();
+
+        TrajectorySequence toPoleAfterConeIntakeCycle4 = robot.driveSubsystem.trajectorySequenceBuilder(toConeStackAfterPoleDepositCycle4.end())
+                .lineTo(new Vector2d(AutoConstants.POLE_LINE_X, AutoConstants.POLE_LINE_Y))
+                .splineTo(new Vector2d(AutoConstants.POLE_SPLINE_X + 5, AutoConstants.POLE_SPLINE_Y + 4.5), Math.toRadians(AutoConstants.POLE_HEADING - 1))
+                .build();
+
+        TrajectorySequence toParkingSpotOne = robot.driveSubsystem.trajectorySequenceBuilder(toPoleAfterConeIntakeCycle4.end())
                 .forward(5)
                 .lineToLinearHeading(new Pose2d(20, -12, Math.toRadians(270)))
                 .build();
 
-        TrajectorySequence toParkingSpotTwo = robot.driveSubsystem.trajectorySequenceBuilder(toPoleAfterConeIntakeCycle3.end())
+        TrajectorySequence toParkingSpotTwo = robot.driveSubsystem.trajectorySequenceBuilder(toPoleAfterConeIntakeCycle4.end())
                 .forward(3)
                 .lineToLinearHeading(new Pose2d(46, -12, Math.toRadians(0)))
                 .build();
 
-        TrajectorySequence toParkingSpotThree = robot.driveSubsystem.trajectorySequenceBuilder(toPoleAfterConeIntakeCycle3.end())
+        TrajectorySequence toParkingSpotThree = robot.driveSubsystem.trajectorySequenceBuilder(toPoleAfterConeIntakeCycle4.end())
                 .forward(2)
                 .lineToLinearHeading(new Pose2d(65, -10, Math.toRadians(270)))
 
@@ -115,16 +127,13 @@ public class RightAutoWithNavX extends LinearOpMode {
             robot.write();
         }
 
-
-
-                CommandScheduler.getInstance().schedule(
-                        new SequentialCommandGroup(
-                             new AutoPreloadCommand(robot, toPolePreload, toConeStackAfterPreload),
-                                new AutoCycleCommandV6(robot, toPoleAfterConeIntakeCycle1, toConeStackAfterPoleDepositCycle2, AutoConstants.SLIDE_HEIGHTS[1]),
-                                new WaitCommand(25),
-                                new AutoCycleCommandV6(robot, toPoleAfterConeIntakeCycle2, toConeStackAfterPoleDepositCycle3, AutoConstants.SLIDE_HEIGHTS[2]),
-                                new WaitCommand(25),
-                                new AutoCycleCommandV6(robot, toPoleAfterConeIntakeCycle3, toParkingSpotThree, 0)
+        CommandScheduler.getInstance().schedule(
+                new SequentialCommandGroup(
+                        new AutoPreloadCommandV2(robot, toPolePreload, toConeStackAfterPreload),
+                        new AutoCycleCommandV7(robot, toPoleAfterConeIntakeCycle1, toConeStackAfterPoleDepositCycle2, AutoConstants.SLIDE_HEIGHTS[1]),
+                        new AutoCycleCommandV7(robot, toPoleAfterConeIntakeCycle2, toConeStackAfterPoleDepositCycle3, AutoConstants.SLIDE_HEIGHTS[2]),
+                        new AutoCycleCommandV7(robot, toPoleAfterConeIntakeCycle3, toConeStackAfterPoleDepositCycle4, AutoConstants.SLIDE_HEIGHTS[3]),
+                        new AutoCycleCommandV7(robot, toPoleAfterConeIntakeCycle4, toParkingSpotTwo, 0)
                         )
                 );
 

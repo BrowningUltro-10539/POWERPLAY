@@ -17,6 +17,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.commands.MecanumDriveCommand;
 import org.firstinspires.ftc.teamcode.commands.NewLiftPositionCommand;
+import org.firstinspires.ftc.teamcode.commands.Old.LiftPositionCommand;
 import org.firstinspires.ftc.teamcode.commands.subsystem.IntakeSubsystem;
 
 @TeleOp
@@ -27,6 +28,8 @@ public class DriveOpMode extends CommandOpMode {
     private double loopTime = 0;
 
     private GamepadEx driver2Ex;
+
+    private IntakeSubsystem.IntakeState intakeState;
 
 
     @Override
@@ -72,7 +75,7 @@ public class DriveOpMode extends CommandOpMode {
             schedule(new SequentialCommandGroup(
                     new InstantCommand(() -> robot.intake.update(IntakeSubsystem.IntakeState.DECIDE)),
                     new WaitCommand(100),
-                    new NewLiftPositionCommand(robot.lift, 5, 200, 200, 2)
+                    new NewLiftPositionCommand(robot.lift, 4, 200, 200, 2)
 
             ));
         }
@@ -96,7 +99,12 @@ public class DriveOpMode extends CommandOpMode {
         }
 
         if(gamepad1.a){
+
             schedule(new SequentialCommandGroup(
+                        new ParallelCommandGroup(
+                          new InstantCommand(() -> robot.intake.update(IntakeSubsystem.ArmState.POLE_DUNK)),
+                          new NewLiftPositionCommand(robot.lift, robot.lift.liftTargetPosition- 1.5, 200, 200, 2)
+                        ),
                         new InstantCommand(() -> robot.intake.update(IntakeSubsystem.IntakeState.OPEN_CLAW)),
                         new WaitCommand(500),
                         new ParallelCommandGroup(
@@ -120,6 +128,7 @@ public class DriveOpMode extends CommandOpMode {
 
 
         schedule(new MecanumDriveCommand(robot.driveSubsystem, () -> -gamepad1.left_stick_y, () -> -gamepad1.left_stick_x, () -> gamepad1.right_stick_x));
+
 
 
 

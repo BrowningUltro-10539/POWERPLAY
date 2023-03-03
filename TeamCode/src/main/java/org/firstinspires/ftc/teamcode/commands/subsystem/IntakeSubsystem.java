@@ -45,12 +45,13 @@ public class IntakeSubsystem extends SubsystemBase {
     public static double ARM_DUNK = 0.58;
     public static double LOW_POLE = 0.0;
     public static double ARM_MID = 0.4;
+    public static double TELE_OP_DEPOSIT = 0.59;
 
 
     private boolean isAuto;
 
     public enum IntakeState { INTAKE, DECIDE, OPEN_CLAW, CLOSE_CLAW, LOW_POLE, MEDIUM_POLE}
-    public enum ArmState { INTAKE, DEPOSIT, DUNK, MIDWAY, LOW_POLE, AUTO_INIT, POLE_DUNK}
+    public enum ArmState { INTAKE, DEPOSIT, DUNK, MIDWAY, LOW_POLE, AUTO_INIT, POLE_DUNK, TELE_OP_DEPOSIT}
     public enum ClawState { OPEN, CLOSED }
     public enum RotateState { INTAKE, MID, TRANSFER }
 
@@ -129,6 +130,9 @@ public class IntakeSubsystem extends SubsystemBase {
             case POLE_DUNK:
                 setArm(0.65);
                 break;
+            case TELE_OP_DEPOSIT:
+                setArm(TELE_OP_DEPOSIT);
+
         }
     }
 
@@ -157,7 +161,7 @@ public class IntakeSubsystem extends SubsystemBase {
                                     new WaitCommand(300),
                                     new ParallelCommandGroup(
                                             new InstantCommand(() -> update(RotateState.TRANSFER)),
-                                            new InstantCommand(() -> update(ArmState.DEPOSIT))
+                                            new InstantCommand(() -> update(ArmState.TELE_OP_DEPOSIT))
 
                                     )
                             )
@@ -185,11 +189,10 @@ public class IntakeSubsystem extends SubsystemBase {
                     break;
                 case MEDIUM_POLE:
                     CommandScheduler.getInstance().schedule(new SequentialCommandGroup(
-                                    new InstantCommand(() -> update(ArmState.DUNK)),
+                                    new InstantCommand(() -> update(ArmState.TELE_OP_DEPOSIT)),
                                     new InstantCommand(() -> update(ClawState.CLOSED)),
                                     new InstantCommand(() -> update(RotateState.TRANSFER))
                     )
-
                     );
                     break;
             }
@@ -210,6 +213,8 @@ public class IntakeSubsystem extends SubsystemBase {
         leftArm.setPosition(pos);
         rightArm.setPosition(1 - pos);
     }
+
+
 
 
 
