@@ -3,26 +3,24 @@ package org.firstinspires.ftc.teamcode.common;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.arcrobotics.ftclib.command.CommandScheduler;
-import com.arcrobotics.ftclib.command.InstantCommand;
-import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.Robot;
+import org.firstinspires.ftc.teamcode.commands.Auto.Cycle.AutoCycleCommandV6;
 import org.firstinspires.ftc.teamcode.commands.Auto.Cycle.AutoCycleCommandV7Medium;
 import org.firstinspires.ftc.teamcode.commands.Auto.Cycle.AutoCycleCommandV7MediumWithPark;
+import org.firstinspires.ftc.teamcode.commands.Auto.Cycle.AutoPreloadCommand;
 import org.firstinspires.ftc.teamcode.commands.Auto.Cycle.AutoPreloadCommandV2Medium;
-import org.firstinspires.ftc.teamcode.commands.Auto.TrajectorySequenceFollowerCommand;
-import org.firstinspires.ftc.teamcode.commands.NewLiftPositionCommand;
-import org.firstinspires.ftc.teamcode.rr.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.commands.subsystem.IntakeSubsystem;
+import org.firstinspires.ftc.teamcode.rr.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.rr.util.AutoConstants;
 import org.firstinspires.ftc.teamcode.vision.AprilTagDetectionPipeline;
 import org.openftc.apriltag.AprilTagDetection;
@@ -32,8 +30,8 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 
 import java.util.ArrayList;
 
-@Autonomous(name = "RIGHT_SIDE_MEDIUM", group = "COMPETITION")
-public class RIGHT_SIDE_MEDIUM_WITH_VISION extends LinearOpMode {
+@Autonomous(name = "RIGHT_SIDE_HIGH", group = "COMPETITION")
+public class RIGHT_SIDE_HIGH_WITH_VISION extends LinearOpMode {
 
     private Robot robot;
     private ElapsedTime timer;
@@ -80,59 +78,65 @@ public class RIGHT_SIDE_MEDIUM_WITH_VISION extends LinearOpMode {
         robot.intake.update(IntakeSubsystem.ClawState.CLOSED);
 
 
-        TrajectorySequence toPolePreloadMedium = robot.driveSubsystem.trajectorySequenceBuilder(startPose)
-                .lineTo(new Vector2d(36, -35))
-                .splineTo(new Vector2d(31.5, -28), Math.toRadians(140))
-
+        TrajectorySequence toPolePreload = robot.driveSubsystem.trajectorySequenceBuilder(startPose)
+                .lineTo(new Vector2d(36.2, -4.5))
+                .turn(Math.toRadians(60))
+                .back(1.75)
                 .build();
 
-        TrajectorySequence toConeStack = robot.driveSubsystem.trajectorySequenceBuilder(toPolePreloadMedium.end())
-                .lineToLinearHeading(new Pose2d(35, -9, Math.toRadians(0)))
-                .lineTo(new Vector2d(63, -9))
+        Trajectory toConeStackAfterPreload = robot.driveSubsystem.trajectoryBuilder(toPolePreload.end())
+                .splineTo(new Vector2d(AutoConstants.CONE_STACK_SPLINE_X, AutoConstants.CONE_STACK_SPLINE_Y), AutoConstants.CONE_STACK_HEADING)
+                .lineTo(new Vector2d(AutoConstants.CONE_STACK_LINE_X, AutoConstants.CONE_STACK_LINE_Y))
                 .build();
 
-        TrajectorySequence toPoleAfterConeIntakeCycle1 = robot.driveSubsystem.trajectorySequenceBuilder(toConeStack.end())
-                .lineTo(new Vector2d(48, -12.25))
-                .setTurnConstraint(Math.toRadians(75), Math.toRadians(75))
-                .splineTo(new Vector2d(34.25, -20.4), Math.toRadians(207))
+        TrajectorySequence toPoleAfterConeIntakeCycle1 = robot.driveSubsystem.trajectorySequenceBuilder(toConeStackAfterPreload.end())
+                .lineTo(new Vector2d(AutoConstants.POLE_LINE_X, AutoConstants.POLE_LINE_Y))
+                .splineTo(new Vector2d(AutoConstants.POLE_SPLINE_X, AutoConstants.POLE_SPLINE_Y), Math.toRadians(AutoConstants.POLE_HEADING - 1))
                 .build();
 
-        TrajectorySequence toConeStackAfterConeDepositCycle2 = robot.driveSubsystem.trajectorySequenceBuilder(toPoleAfterConeIntakeCycle1.end())
-                .splineTo(new Vector2d(48, -11), Math.toRadians(0))
-                .lineTo(new Vector2d(62.9, -11 + 0.95))
+        TrajectorySequence toConeStackAfterPoleDeposit = robot.driveSubsystem.trajectorySequenceBuilder(toPoleAfterConeIntakeCycle1.end())
+                .splineTo(new Vector2d(AutoConstants.CONE_STACK_SPLINE_X, AutoConstants.CONE_STACK_SPLINE_Y), AutoConstants.CONE_STACK_HEADING)
+                .lineTo(new Vector2d(AutoConstants.CONE_STACK_LINE_X, AutoConstants.CONE_STACK_LINE_Y))
                 .build();
 
-
-        TrajectorySequence toPoleAfterConeIntakeCycle2 = robot.driveSubsystem.trajectorySequenceBuilder(toConeStackAfterConeDepositCycle2.end())
-                .lineTo(new Vector2d(48, -12.25))
-                .setTurnConstraint(Math.toRadians(75), Math.toRadians(75))
-                .splineTo(new Vector2d(34.25, -20.25), Math.toRadians(207))
+        TrajectorySequence toPoleAfterConeIntake = robot.driveSubsystem.trajectorySequenceBuilder(toConeStackAfterPoleDeposit.end())
+                .lineTo(new Vector2d(AutoConstants.POLE_LINE_X, AutoConstants.POLE_LINE_Y))
+                .splineTo(new Vector2d(AutoConstants.POLE_SPLINE_X, AutoConstants.POLE_SPLINE_Y), Math.toRadians(AutoConstants.POLE_HEADING - 1))
                 .build();
 
-
-        TrajectorySequence toConeStackAfterConeDepositCycle3 = robot.driveSubsystem.trajectorySequenceBuilder(toPoleAfterConeIntakeCycle2.end())
-                .splineTo(new Vector2d(48, -11), Math.toRadians(0))
-                .lineTo(new Vector2d(64.7, -11 + 0.95))
+        TrajectorySequence toConeStackAfterPoleDepositCycle2 = robot.driveSubsystem.trajectorySequenceBuilder(toPoleAfterConeIntakeCycle1.end())
+                .splineTo(new Vector2d(AutoConstants.CONE_STACK_SPLINE_X, AutoConstants.CONE_STACK_SPLINE_Y), AutoConstants.CONE_STACK_HEADING)
+                .lineTo(new Vector2d(AutoConstants.CONE_STACK_LINE_X + 1, AutoConstants.CONE_STACK_LINE_Y))
                 .build();
 
-        TrajectorySequence toPoleAfterConeIntakeCycle3 = robot.driveSubsystem.trajectorySequenceBuilder(toConeStackAfterConeDepositCycle3.end())
-                .lineTo(new Vector2d(48, -12.25))
-                .setTurnConstraint(Math.toRadians(75), Math.toRadians(75))
-                .splineTo(new Vector2d(34, -20.4), Math.toRadians(207))
+        TrajectorySequence toPoleAfterConeIntakeCycle2 = robot.driveSubsystem.trajectorySequenceBuilder(toConeStackAfterPoleDepositCycle2.end())
+                .lineTo(new Vector2d(AutoConstants.POLE_LINE_X, AutoConstants.POLE_LINE_Y))
+                .splineTo(new Vector2d(AutoConstants.POLE_SPLINE_X + 1.5, AutoConstants.POLE_SPLINE_Y + 1.5), Math.toRadians(AutoConstants.POLE_HEADING - 1))
+                .build();
+
+        TrajectorySequence toConeStackAfterPoleDepositCycle3 = robot.driveSubsystem.trajectorySequenceBuilder(toPoleAfterConeIntakeCycle2.end())
+                .splineTo(new Vector2d(AutoConstants.CONE_STACK_SPLINE_X, AutoConstants.CONE_STACK_SPLINE_Y), AutoConstants.CONE_STACK_HEADING)
+                .lineTo(new Vector2d(AutoConstants.CONE_STACK_LINE_X + 3, AutoConstants.CONE_STACK_LINE_Y))
+                .build();
+
+        TrajectorySequence toPoleAfterConeIntakeCycle3 = robot.driveSubsystem.trajectorySequenceBuilder(toConeStackAfterPoleDepositCycle3.end())
+                .lineTo(new Vector2d(AutoConstants.POLE_LINE_X, AutoConstants.POLE_LINE_Y))
+                .splineTo(new Vector2d(AutoConstants.POLE_SPLINE_X + 4, AutoConstants.POLE_SPLINE_Y + 2.5), Math.toRadians(AutoConstants.POLE_HEADING - 3))
                 .build();
 
         TrajectorySequence toParkingSpotOne = robot.driveSubsystem.trajectorySequenceBuilder(toPoleAfterConeIntakeCycle3.end())
-                .lineTo(new Vector2d(40, -12))
-                .lineToLinearHeading(new Pose2d(15, -12, Math.toRadians(270)))
+                .forward(5)
+                .lineToLinearHeading(new Pose2d(20, -12, Math.toRadians(270)))
                 .build();
 
         TrajectorySequence toParkingSpotTwo = robot.driveSubsystem.trajectorySequenceBuilder(toPoleAfterConeIntakeCycle3.end())
                 .forward(3)
-                .lineToLinearHeading(new Pose2d(44, -12, Math.toRadians(270)))
+                .lineToLinearHeading(new Pose2d(45, -12, Math.toRadians(0)))
+                .turn(Math.toRadians(-90))
                 .build();
 
         TrajectorySequence toParkingSpotThree = robot.driveSubsystem.trajectorySequenceBuilder(toPoleAfterConeIntakeCycle3.end())
-                .lineTo(new Vector2d(40, -12))
+                .forward(5)
                 .lineToLinearHeading(new Pose2d(67, -10, Math.toRadians(270)))
 
                 .build();
@@ -233,55 +237,47 @@ public class RIGHT_SIDE_MEDIUM_WITH_VISION extends LinearOpMode {
         if (tagOfInterest == null) {
             CommandScheduler.getInstance().schedule(
                     new SequentialCommandGroup(
-                            new AutoPreloadCommandV2Medium(robot, toPolePreloadMedium, toConeStack),
-                            new WaitCommand(10),
-                            new AutoCycleCommandV7Medium(robot, toPoleAfterConeIntakeCycle1, toConeStackAfterConeDepositCycle2, AutoConstants.SLIDE_HEIGHTS[1]),
-                            new WaitCommand(10),
-                            new AutoCycleCommandV7Medium(robot, toPoleAfterConeIntakeCycle2, toConeStackAfterConeDepositCycle3, AutoConstants.SLIDE_HEIGHTS[2]),
-                            new WaitCommand(10),
-                            new AutoCycleCommandV7MediumWithPark(robot, toPoleAfterConeIntakeCycle3, toParkingSpotTwo, 0)
-
+                            new AutoPreloadCommand(robot, toPolePreload, toConeStackAfterPreload),
+                            new AutoCycleCommandV6(robot, toPoleAfterConeIntakeCycle1, toConeStackAfterPoleDepositCycle2, AutoConstants.SLIDE_HEIGHTS[1]),
+                            new WaitCommand(25),
+                            new AutoCycleCommandV6(robot, toPoleAfterConeIntakeCycle2, toConeStackAfterPoleDepositCycle3, 2.8),
+                            new WaitCommand(25),
+                            new AutoCycleCommandV6(robot, toPoleAfterConeIntakeCycle3, toParkingSpotTwo, 0)
                     )
             );
         } else if (tagOfInterest.id == 16) {
             CommandScheduler.getInstance().schedule(
                     new SequentialCommandGroup(
-                            new AutoPreloadCommandV2Medium(robot, toPolePreloadMedium, toConeStack),
-                            new WaitCommand(10),
-                            new AutoCycleCommandV7Medium(robot, toPoleAfterConeIntakeCycle1, toConeStackAfterConeDepositCycle2, AutoConstants.SLIDE_HEIGHTS[1]),
-                            new WaitCommand(10),
-                            new AutoCycleCommandV7Medium(robot, toPoleAfterConeIntakeCycle2, toConeStackAfterConeDepositCycle3, AutoConstants.SLIDE_HEIGHTS[2]),
-                            new WaitCommand(10),
-                            new AutoCycleCommandV7MediumWithPark(robot, toPoleAfterConeIntakeCycle3, toParkingSpotOne, 0)
-
+                            new AutoPreloadCommand(robot, toPolePreload, toConeStackAfterPreload),
+                            new AutoCycleCommandV6(robot, toPoleAfterConeIntakeCycle1, toConeStackAfterPoleDepositCycle2, AutoConstants.SLIDE_HEIGHTS[1]),
+                            new WaitCommand(25),
+                            new AutoCycleCommandV6(robot, toPoleAfterConeIntakeCycle2, toConeStackAfterPoleDepositCycle3, 2.8),
+                            new WaitCommand(25),
+                            new AutoCycleCommandV6(robot, toPoleAfterConeIntakeCycle3, toParkingSpotOne, 0)
                     )
             );
 
         } else if (tagOfInterest.id == 14) {
             CommandScheduler.getInstance().schedule(
                     new SequentialCommandGroup(
-                            new AutoPreloadCommandV2Medium(robot, toPolePreloadMedium, toConeStack),
-                            new WaitCommand(10),
-                            new AutoCycleCommandV7Medium(robot, toPoleAfterConeIntakeCycle1, toConeStackAfterConeDepositCycle2, AutoConstants.SLIDE_HEIGHTS[1]),
-                            new WaitCommand(10),
-                            new AutoCycleCommandV7Medium(robot, toPoleAfterConeIntakeCycle2, toConeStackAfterConeDepositCycle3, AutoConstants.SLIDE_HEIGHTS[2]),
-                            new WaitCommand(10),
-                            new AutoCycleCommandV7MediumWithPark(robot, toPoleAfterConeIntakeCycle3, toParkingSpotTwo, 0)
-
+                            new AutoPreloadCommand(robot, toPolePreload, toConeStackAfterPreload),
+                            new AutoCycleCommandV6(robot, toPoleAfterConeIntakeCycle1, toConeStackAfterPoleDepositCycle2, AutoConstants.SLIDE_HEIGHTS[1]),
+                            new WaitCommand(25),
+                            new AutoCycleCommandV6(robot, toPoleAfterConeIntakeCycle2, toConeStackAfterPoleDepositCycle3, 2.8),
+                            new WaitCommand(25),
+                            new AutoCycleCommandV6(robot, toPoleAfterConeIntakeCycle3, toParkingSpotTwo, 0)
                     )
             );
 
         } else if (tagOfInterest.id == 19) {
             CommandScheduler.getInstance().schedule(
                     new SequentialCommandGroup(
-                            new AutoPreloadCommandV2Medium(robot, toPolePreloadMedium, toConeStack),
-                            new WaitCommand(10),
-                            new AutoCycleCommandV7Medium(robot, toPoleAfterConeIntakeCycle1, toConeStackAfterConeDepositCycle2, AutoConstants.SLIDE_HEIGHTS[1]),
-                            new WaitCommand(10),
-                            new AutoCycleCommandV7Medium(robot, toPoleAfterConeIntakeCycle2, toConeStackAfterConeDepositCycle3, AutoConstants.SLIDE_HEIGHTS[2]),
-                            new WaitCommand(10),
-                            new AutoCycleCommandV7MediumWithPark(robot, toPoleAfterConeIntakeCycle3, toParkingSpotThree, 0)
-
+                            new AutoPreloadCommand(robot, toPolePreload, toConeStackAfterPreload),
+                            new AutoCycleCommandV6(robot, toPoleAfterConeIntakeCycle1, toConeStackAfterPoleDepositCycle2, AutoConstants.SLIDE_HEIGHTS[1]),
+                            new WaitCommand(25),
+                            new AutoCycleCommandV6(robot, toPoleAfterConeIntakeCycle2, toConeStackAfterPoleDepositCycle3, 2.8),
+                            new WaitCommand(25),
+                            new AutoCycleCommandV6(robot, toPoleAfterConeIntakeCycle3, toParkingSpotThree, 0)
                     )
             );
 

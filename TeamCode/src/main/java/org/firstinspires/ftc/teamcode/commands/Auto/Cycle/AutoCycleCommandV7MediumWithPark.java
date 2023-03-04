@@ -27,7 +27,7 @@ public class AutoCycleCommandV7MediumWithPark extends SequentialCommandGroup {
                                                 new ParallelCommandGroup(
                                                         new InstantCommand(() -> robot.intake.update(IntakeSubsystem.ArmState.DEPOSIT)),
                                                         new InstantCommand(() -> robot.intake.update(IntakeSubsystem.RotateState.TRANSFER)),
-                                                        new NewLiftPositionCommand(robot.lift, 11, 40, 40, 2)
+                                                        new NewLiftPositionCommand(robot.lift, 12.5, 40, 40, 2)
 
                                                 ))
                                 )
@@ -40,13 +40,12 @@ public class AutoCycleCommandV7MediumWithPark extends SequentialCommandGroup {
                         new InstantCommand(() -> robot.intake.update(IntakeSubsystem.ClawState.OPEN))
                 ),
                 new WaitCommand(250),
-                new InstantCommand(() -> robot.intake.update(IntakeSubsystem.ArmState.INTAKE)),
-                new InstantCommand(() -> robot.intake.update(IntakeSubsystem.RotateState.INTAKE)),
-                new WaitCommand(250),
                 new ParallelCommandGroup(
                         new NewLiftPositionCommand(robot.lift, slideHeight, 200, 200,2),
                         new TrajectorySequenceFollowerCommand(robot.driveSubsystem, toConeStack)
-                )
+                ),
+                new InstantCommand(() -> robot.intake.update(IntakeSubsystem.ArmState.INTAKE)),
+                new InstantCommand(() -> robot.intake.update(IntakeSubsystem.RotateState.INTAKE))
         );
     }
 }

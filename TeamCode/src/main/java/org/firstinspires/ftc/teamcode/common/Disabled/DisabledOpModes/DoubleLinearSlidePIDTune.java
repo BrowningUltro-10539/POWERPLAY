@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.common.Disabled.DisabledOpModes;
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.hardware.lynx.LynxModule;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -12,6 +13,7 @@ import java.util.List;
 
 @Config
 @TeleOp
+@Disabled
 
 public class DoubleLinearSlidePIDTune extends OpMode {
 

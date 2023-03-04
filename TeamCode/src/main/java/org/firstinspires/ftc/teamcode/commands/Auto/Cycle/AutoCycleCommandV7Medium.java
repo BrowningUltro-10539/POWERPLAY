@@ -27,7 +27,7 @@ public class AutoCycleCommandV7Medium extends SequentialCommandGroup {
                                                 new ParallelCommandGroup(
                                                         new InstantCommand(() -> robot.intake.update(IntakeSubsystem.ArmState.DEPOSIT)),
                                                         new InstantCommand(() -> robot.intake.update(IntakeSubsystem.RotateState.TRANSFER)),
-                                                        new NewLiftPositionCommand(robot.lift, 11, 40, 40, 2)
+                                                        new NewLiftPositionCommand(robot.lift, 12.5, 40, 40, 2)
 
                                                 ))
                                 )

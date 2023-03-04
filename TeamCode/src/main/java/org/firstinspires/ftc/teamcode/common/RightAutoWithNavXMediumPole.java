@@ -141,7 +141,7 @@ public class RightAutoWithNavXMediumPole extends LinearOpMode {
         TrajectorySequence toPoleAfterConeIntakeCycle2 = robot.driveSubsystem.trajectorySequenceBuilder(toConeStackAfterConeDepositCycle2.end())
                 .lineTo(new Vector2d(48, -12.25))
                 .setTurnConstraint(Math.toRadians(75), Math.toRadians(75))
-                .splineTo(new Vector2d(36, -20), Math.toRadians(207))
+                .splineTo(new Vector2d(37.1, -18.5), Math.toRadians(207))
                 .build();
 
 
@@ -155,9 +155,6 @@ public class RightAutoWithNavXMediumPole extends LinearOpMode {
                 .setTurnConstraint(Math.toRadians(75), Math.toRadians(75))
                 .splineTo(new Vector2d(36.4 + 0.5, -18 - 0.5), Math.toRadians(207))
                 .build();
-
-
-
 
 
         while(!isStarted()){

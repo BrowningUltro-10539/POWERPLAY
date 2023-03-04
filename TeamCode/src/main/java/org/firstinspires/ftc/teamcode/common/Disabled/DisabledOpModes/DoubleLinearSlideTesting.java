@@ -1,7 +1,10 @@
 package org.firstinspires.ftc.teamcode.common.Disabled.DisabledOpModes;
 
+import androidx.appcompat.app.ActionBar;
+
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.controller.PIDController;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -9,6 +12,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 @Config
 @TeleOp
+@Disabled
 public class DoubleLinearSlideTesting extends OpMode {
 
     public DcMotorEx liftMotorOne;

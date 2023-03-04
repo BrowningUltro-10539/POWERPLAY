@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.ServoImplEx;
 
 @TeleOp
 @Config
-
+@Disabled
 public class ResettingServosForBuilding extends OpMode {
     public Servo leftArm;
     public Servo rightArm;

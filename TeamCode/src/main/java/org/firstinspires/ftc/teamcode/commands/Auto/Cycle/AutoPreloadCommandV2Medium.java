@@ -23,7 +23,7 @@ public class AutoPreloadCommandV2Medium extends SequentialCommandGroup {
                     new SequentialCommandGroup(
                             new WaitCommand(150),
                             new ParallelCommandGroup(
-                                    new NewLiftPositionCommand(robot.lift, 11, 40, 50, 2),
+                                    new NewLiftPositionCommand(robot.lift, 12.5, 40, 50, 2),
                                     new InstantCommand(() -> robot.intake.update(IntakeSubsystem.ArmState.DEPOSIT))
                             ))
                    ),

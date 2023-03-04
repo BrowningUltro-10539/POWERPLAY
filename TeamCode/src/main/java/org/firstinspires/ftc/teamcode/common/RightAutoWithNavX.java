@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.common;
 
+import androidx.appcompat.app.ActionBar;
+
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
@@ -8,6 +10,7 @@ import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.Robot;
@@ -21,6 +24,7 @@ import org.firstinspires.ftc.teamcode.vision.SleeveDetection;
 import org.openftc.easyopencv.OpenCvCamera;
 
 @Autonomous(name = "RIGHT_OFFICIAL_AUTO", group = "COMPETITION")
+@Disabled
 public class RightAutoWithNavX extends LinearOpMode {
     private Robot robot;
     private OpenCvCamera camera;
@@ -49,7 +53,7 @@ public class RightAutoWithNavX extends LinearOpMode {
         TrajectorySequence toPolePreload = robot.driveSubsystem.trajectorySequenceBuilder(startPose)
                 .lineTo(new Vector2d(36.2, -4.5))
                 .turn(Math.toRadians(60))
-                .back(1.25)
+                .back(1.75)
                 .build();
 
         Trajectory toConeStackAfterPreload = robot.driveSubsystem.trajectoryBuilder(toPolePreload.end())
@@ -79,7 +83,7 @@ public class RightAutoWithNavX extends LinearOpMode {
 
         TrajectorySequence toPoleAfterConeIntakeCycle2 = robot.driveSubsystem.trajectorySequenceBuilder(toConeStackAfterPoleDepositCycle2.end())
                 .lineTo(new Vector2d(AutoConstants.POLE_LINE_X, AutoConstants.POLE_LINE_Y))
-                .splineTo(new Vector2d(AutoConstants.POLE_SPLINE_X + 1.5, AutoConstants.POLE_SPLINE_Y + 1.5), Math.toRadians(AutoConstants.POLE_HEADING - 1))
+                .splineTo(new Vector2d(AutoConstants.POLE_SPLINE_X + 1.5, AutoConstants.POLE_SPLINE_Y + 1.5), Math.toRadians(AutoConstants.POLE_HEADING))
                 .build();
 
         TrajectorySequence toConeStackAfterPoleDepositCycle3 = robot.driveSubsystem.trajectorySequenceBuilder(toPoleAfterConeIntakeCycle2.end())
@@ -89,7 +93,7 @@ public class RightAutoWithNavX extends LinearOpMode {
 
         TrajectorySequence toPoleAfterConeIntakeCycle3 = robot.driveSubsystem.trajectorySequenceBuilder(toConeStackAfterPoleDepositCycle3.end())
                 .lineTo(new Vector2d(AutoConstants.POLE_LINE_X, AutoConstants.POLE_LINE_Y))
-                .splineTo(new Vector2d(AutoConstants.POLE_SPLINE_X + 4, AutoConstants.POLE_SPLINE_Y + 3.5), Math.toRadians(AutoConstants.POLE_HEADING - 1))
+                .splineTo(new Vector2d(AutoConstants.POLE_SPLINE_X + 4, AutoConstants.POLE_SPLINE_Y + 3.5), Math.toRadians(AutoConstants.POLE_HEADING))
                 .build();
 
         TrajectorySequence toParkingSpotOne = robot.driveSubsystem.trajectorySequenceBuilder(toPoleAfterConeIntakeCycle3.end())
